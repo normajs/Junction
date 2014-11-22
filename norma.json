@@ -1,0 +1,16 @@
+{
+  "name": "Junction",
+  "message": "Write custom config items in this file",
+  "tasks": {
+    "javascript": {
+      "src": "lib/**",
+      "dest": "test/js"
+    }
+  },
+  "processes": {
+    "browser-sync": {
+      "root": "test/",
+      "watch": "test/**"
+    }
+  }
+}
