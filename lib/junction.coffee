@@ -5,7 +5,6 @@
 
 ###
 
-
 do ->
 
   ###
@@ -89,8 +88,8 @@ do ->
 
     returnElements
 
-
   junction.fn = {}
+  junction.state = {}
 
   junction.extend = (first, second) ->
 
@@ -101,3 +100,9 @@ do ->
     first
 
   window["junction"] = junction
+
+#= require_tree ./core
+#= require_tree ./data
+#= require_tree ./ajax
+#= require_tree ./dom
+#= require_tree ./events

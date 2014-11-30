@@ -21,6 +21,6 @@
   "homepage": "https://github.com/normajs/junction",
   "dependencies": {
     "norma-browser-sync": "0.0.1",
-    "norma-javascript": "^0.1.0"
+    "norma-javascript": "^0.1.1"
   }
 }
