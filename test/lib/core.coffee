@@ -1,13 +1,11 @@
 
-casper.test.begin "Core Methods", 1, (test) ->
+casper.test.begin "Core Methods", 2, (test) ->
 
 
   casper.start()
 
     # Junction is ready
     .then ->
-
-      @.page.injectJs("./test/js/junction.js")
 
       test.assertEvalEquals (->
 
@@ -21,30 +19,27 @@ casper.test.begin "Core Methods", 1, (test) ->
 
       return
 
-    # # inArray
-    # .then ->
-    #
-    #   @evaluate ->
-    #
-    #     junction(document)
-    #       .append("<div><ul><li>test></li></ul></div>")
-    #
-    #   test.assertEvalEquals (->
-    #
-    #     inArray = false
-    #
-    #     list = junction "ul"
-    #     listItem = junction "div"
-    #
-    #     if junction.inArray(listItem, list) > -1
-    #       inArray = true
-    #
-    #     console.log "foobar"
-    #
-    #     return inArray
-    #   ), true, "inArray works"
-    #
-    #   return
+
+    .then ->
+
+      @.evaluate ->
+        div = document.createElement "div"
+        div.id = "test"
+
+        document.body.appendChild div
+
+
+      test.assertEvalEquals (->
+
+        test = junction "#test"
+
+        for item in test
+          if item is document.getElementById("test")
+            return true
+
+        return false
+
+      ), true, "Junction returns array of nodes"
 
 
 

@@ -1,6 +1,6 @@
 
 
-casper.test.begin "Junction is present", 3, (test) ->
+casper.test.begin "Junction is present", 2, (test) ->
 
 
   casper.start()
@@ -14,6 +14,7 @@ casper.test.begin "Junction is present", 3, (test) ->
         return typeof junction
       ), "function", "Junction is present"
 
+
     # Library has methods
     .then ->
 
@@ -23,27 +24,7 @@ casper.test.begin "Junction is present", 3, (test) ->
 
       return
 
-    .then ->
 
-
-      @evaluate ->
-        div = document.createElement "div"
-        div.id = "test"
-
-        document.body.appendChild div
-
-
-      test.assertEvalEquals (->
-
-        test = junction "#test"
-
-        for item in test
-          if item is document.getElementById("test")
-            return true
-
-        return false
-
-      ), true, "Junction returns array of nodes"
 
 
   casper.run ->
