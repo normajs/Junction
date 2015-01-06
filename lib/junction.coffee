@@ -7,6 +7,7 @@
 
 do ->
 
+
   ###
 
     @param {string, object} selector
@@ -55,22 +56,10 @@ do ->
       if context
         return junction(context).find selector
 
-
-      # Try to get elements
-      if selector.indexOf("#") is 0
-
-        try
-          element = document.getElementByID selector
-          elements = [element]
-        catch e
-          junction.error 'Id selector', selector
-
-      else
-
-        try
-          elements = document.querySelectorAll selector
-        catch e
-          junction.error 'Query selector', selector
+      try
+        elements = document.querySelectorAll selector
+      catch e
+        junction.error 'Query selector', selector
 
       returnElements = (element for element in elements)
 
@@ -98,6 +87,7 @@ do ->
         first[key] = second[key]
 
     first
+
 
   window["junction"] = junction
 

@@ -11,11 +11,12 @@ junction.fn.each = (callback) ->
 
   junction.each this, callback
 
+
 junction.each = (collection, callback) ->
 
   for item in collection
     val = callback.call item, _i, item
-    
+
     if val is false
       break
 

@@ -42,21 +42,11 @@ function (item) {
             if (context) {
                 return junction(context).find(selector);
             }
-            if (selector.indexOf("#") === 0) {
-                try {
-                    element = document.getElementByID(selector);
-                    elements = [element];
-                } catch (_error) {
-                    e = _error;
-                    junction.error('Id selector', selector);
-                }
-            } else {
-                try {
-                    elements = document.querySelectorAll(selector);
-                } catch (_error) {
-                    e = _error;
-                    junction.error('Query selector', selector);
-                }
+            try {
+                elements = document.querySelectorAll(selector);
+            } catch (_error) {
+                e = _error;
+                junction.error('Query selector', selector);
             }
             returnElements = (function () {
                 var _i, _len, _results;
