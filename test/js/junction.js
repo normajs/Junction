@@ -23,52 +23,45 @@ function (item) {
    */
     var junction;
     junction = function (selector, context) {
-        var domFragment, e, element, elements, isObject, returnElements, selectorType;
+        var domFragment, element, elements, returnElements, selectorType;
         selectorType = typeof selector;
         returnElements = [];
-        if (!selector) {
-            return;
-        }
-        isObject = Object.prototype.toString.call(selector) === '[object Array]' || selectorType === 'object' && selector instanceof window.NodeList;
-        if (selectorType === "string" && selector.indexOf("<") === 0) {
-            domFragment = document.createElement("div");
-            domFragment.innerHTML = selector;
-            return junction(domFragment).children().each(function () {
-                return domFragment.removeChild(this);
-            });
-        } else if (selectorType === "function") {
-            return junction.ready(selector);
-        } else if (selectorType === "string") {
-            if (context) {
-                return junction(context).find(selector);
-            }
-            try {
+        if (selector) {
+            if (selectorType === "string" && selector.indexOf("<") === 0) {
+                domFragment = document.createElement("div");
+                domFragment.innerHTML = selector;
+                return junction(domFragment).children().each(function () {
+                    return domFragment.removeChild(this);
+                });
+            } else if (selectorType === "function") {
+                return junction.ready(selector);
+            } else if (selectorType === "string") {
+                if (context) {
+                    return junction(context).find(selector);
+                }
                 elements = document.querySelectorAll(selector);
-            } catch (_error) {
-                e = _error;
-                junction.error('Query selector', selector);
+                returnElements = (function () {
+                    var _i, _len, _results;
+                    _results = [];
+                    for (_i = 0, _len = elements.length; _i < _len; _i++) {
+                        element = elements[_i];
+                        _results.push(element);
+                    }
+                    return _results;
+                })();
+            } else if (Object.prototype.toString.call(selector) === "[object Array]" || selectorType === "object" && selector instanceof window.NodeList) {
+                returnElements = (function () {
+                    var _i, _len, _results;
+                    _results = [];
+                    for (_i = 0, _len = selector.length; _i < _len; _i++) {
+                        element = selector[_i];
+                        _results.push(element);
+                    }
+                    return _results;
+                })();
+            } else {
+                returnElements = returnElements.concat(selector);
             }
-            returnElements = (function () {
-                var _i, _len, _results;
-                _results = [];
-                for (_i = 0, _len = elements.length; _i < _len; _i++) {
-                    element = elements[_i];
-                    _results.push(element);
-                }
-                return _results;
-            })();
-        } else if (isObject) {
-            returnElements = (function () {
-                var _i, _len, _results;
-                _results = [];
-                for (_i = 0, _len = selector.length; _i < _len; _i++) {
-                    element = selector[_i];
-                    _results.push(element);
-                }
-                return _results;
-            })();
-        } else {
-            returnElements = returnElements.concat(selector);
         }
         returnElements = junction.extend(returnElements, junction.fn);
         returnElements.selector = selector;
@@ -177,19 +170,12 @@ junction.runReady = function () {
     }
 };
 
-if (!window.addEventListener) {
-    window.addEventListener = function (event, cb) {
-        return window.attachEvent("on" + event, cb);
-    };
-}
-
 
 /*
 
   If DOM is already ready at exec time, depends on the browser.
   From:
-  https://github.com/mobify/mobifyjs/blob/ +
-  526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
+  https://github.com/mobify/mobifyjs/blob/526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
  */
 
 d = document;
@@ -203,7 +189,7 @@ if (d.attachEvent) {
 }
 
 if (runable) {
-    runReady();
+    junction.runReady();
 } else {
     if (!w.document.addEventListener) {
         w.document.attachEvent("DOMContentLoaded", junction.runReady);
@@ -515,7 +501,7 @@ junction.fn.after = function (fragment) {
  */
 
 junction.fn.append = function (fragment) {
-    if (typeof fragment === "string" || fragment.nodeType !== undefined) {
+    if (typeof fragment === "string" || fragment.nodeType !== void 0) {
         fragment = junction(fragment);
     }
     return this.each(function (index) {
@@ -532,7 +518,8 @@ junction.fn.append = function (fragment) {
 
 /*
 
-  Insert the current set as the last child of the elements matching the selector.
+  Insert the current set as the last child of the elements
+  matching the selector.
 
   @param {string} selector The selector after which to append the current set.
   @return junction
@@ -560,7 +547,7 @@ junction.fn.appendTo = function (selector) {
 junction.fn.attr = function (name, value) {
     var nameStr;
     nameStr = typeof name === "string";
-    if (value !== undefined || !nameStr) {
+    if (value !== void 0 || !nameStr) {
         return this.each(function () {
             var i;
             if (nameStr) {
@@ -577,7 +564,7 @@ junction.fn.attr = function (name, value) {
         if (this[0]) {
             return this[0].getAttribute(name);
         } else {
-            return undefined;
+            return void 0;
         }
     }
 };

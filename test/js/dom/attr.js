@@ -11,7 +11,7 @@
 junction.fn.attr = function (name, value) {
     var nameStr;
     nameStr = typeof name === "string";
-    if (value !== undefined || !nameStr) {
+    if (value !== void 0 || !nameStr) {
         return this.each(function () {
             var i;
             if (nameStr) {
@@ -28,7 +28,7 @@ junction.fn.attr = function (name, value) {
         if (this[0]) {
             return this[0].getAttribute(name);
         } else {
-            return undefined;
+            return void 0;
         }
     }
 };

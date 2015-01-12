@@ -23,52 +23,44 @@ do ->
     selectorType = typeof selector
     returnElements = []
 
-    if !selector
-      return
-
-    # Multi method object typing
-    isObject = Object.prototype
-      .toString
-      .call( selector ) is '[object Array]' or
-
-      selectorType is 'object' and selector instanceof window.NodeList
+    if selector
 
 
-    # if passed a string starting with <, make HTML
-    if selectorType is "string" and selector.indexOf("<") is 0
+      # if passed a string starting with <, make HTML
+      if selectorType is "string" and selector.indexOf("<") is 0
 
-      domFragment = document.createElement "div"
+        domFragment = document.createElement "div"
 
-      domFragment.innerHTML = selector
+        domFragment.innerHTML = selector
 
-      return junction(domFragment).children().each( ->
+        return junction(domFragment).children().each( ->
 
-        domFragment.removeChild this
+          domFragment.removeChild this
 
+        )
+
+      else if selectorType is "function"
+        return junction.ready selector
+
+      # if string, use qsa unless id is given
+      else if selectorType is "string"
+
+        if context
+          return junction(context).find selector
+
+        elements = document.querySelectorAll selector
+
+        returnElements = (element for element in elements)
+
+      else if (Object::toString.call(selector) is "[object Array]" or
+        selectorType is "object" and
+        selector instanceof window.NodeList
       )
 
-    else if selectorType is "function"
-      return junction.ready selector
+        returnElements = (element for element in selector)
 
-    # if string, use qsa unless id is given
-    else if selectorType is "string"
-
-      if context
-        return junction(context).find selector
-
-      try
-        elements = document.querySelectorAll selector
-      catch e
-        junction.error 'Query selector', selector
-
-      returnElements = (element for element in elements)
-
-    else if isObject
-
-      returnElements = (element for element in selector)
-
-    else
-      returnElements = returnElements.concat selector
+      else
+        returnElements = returnElements.concat selector
 
 
     returnElements = junction.extend returnElements, junction.fn

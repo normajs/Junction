@@ -11,7 +11,7 @@
 
 junction.fn.append = (fragment) ->
 
-  if typeof(fragment) is "string" or fragment.nodeType isnt `undefined`
+  if typeof(fragment) is "string" or fragment.nodeType isnt undefined
     fragment = junction fragment
 
 

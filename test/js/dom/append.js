@@ -7,7 +7,7 @@
   @this junction
  */
 junction.fn.append = function (fragment) {
-    if (typeof fragment === "string" || fragment.nodeType !== undefined) {
+    if (typeof fragment === "string" || fragment.nodeType !== void 0) {
         fragment = junction(fragment);
     }
     return this.each(function (index) {

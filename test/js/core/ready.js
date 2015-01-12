@@ -39,19 +39,12 @@ junction.runReady = function () {
     }
 };
 
-if (!window.addEventListener) {
-    window.addEventListener = function (event, cb) {
-        return window.attachEvent("on" + event, cb);
-    };
-}
-
 
 /*
 
   If DOM is already ready at exec time, depends on the browser.
   From:
-  https://github.com/mobify/mobifyjs/blob/ +
-  526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
+  https://github.com/mobify/mobifyjs/blob/526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
  */
 
 d = document;
@@ -65,7 +58,7 @@ if (d.attachEvent) {
 }
 
 if (runable) {
-    runReady();
+    junction.runReady();
 } else {
     if (!w.document.addEventListener) {
         w.document.attachEvent("DOMContentLoaded", junction.runReady);

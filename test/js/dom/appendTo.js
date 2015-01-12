@@ -1,6 +1,7 @@
 /*
 
-  Insert the current set as the last child of the elements matching the selector.
+  Insert the current set as the last child of the elements
+  matching the selector.
 
   @param {string} selector The selector after which to append the current set.
   @return junction

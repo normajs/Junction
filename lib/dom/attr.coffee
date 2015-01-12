@@ -14,7 +14,7 @@ junction.fn.attr = (name, value) ->
 
   nameStr = typeof (name) is "string"
 
-  if value isnt `undefined` or not nameStr
+  if value isnt undefined or not nameStr
 
     @each ->
       if nameStr
@@ -27,4 +27,4 @@ junction.fn.attr = (name, value) ->
       return
 
   else
-    (if this[0] then this[0].getAttribute(name) else `undefined`)
+    (if this[0] then this[0].getAttribute(name) else undefined)
