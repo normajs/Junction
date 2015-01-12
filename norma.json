@@ -2,12 +2,11 @@
   "name": "Junction",
   "tasks": {
     "javascript": {
-      "src": "lib/**",
+      "src": "lib/**/*",
       "dest": "test/js"
     },
     "casperjs": {
-      "endpoint": "NewSpring/norma-casperjs",
-      "src": "test/lib/**"
+      "src": "test/lib/**/*"
     },
     "notify": {},
     "browser-sync": {

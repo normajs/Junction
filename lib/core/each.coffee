@@ -2,7 +2,8 @@
 
   Iterates over `junction` collections.
 
-  @param {function} callback The callback to be invoked on each element and index
+  @param {function} callback The callback to be invoked on
+    each element and index
   @return junction
   @this junction
 

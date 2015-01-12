@@ -2,7 +2,7 @@
 
   Junction Object Constructor
  */
-var d, w, xmlHttp, __indexOf = [].indexOf ||
+var d, runable, w, xmlHttp, __indexOf = [].indexOf ||
 function (item) {
     for (var i = 0, l = this.length; i < l; i++) {
         if (i in this && this[i] === item) return i;
@@ -93,7 +93,8 @@ function (item) {
 
   Iterates over `junction` collections.
 
-  @param {function} callback The callback to be invoked on each element and index
+  @param {function} callback The callback to be invoked on
+    each element and index
   @return junction
   @this junction
  */
@@ -187,14 +188,21 @@ if (!window.addEventListener) {
 
   If DOM is already ready at exec time, depends on the browser.
   From:
-  https://github.com/mobify/mobifyjs/blob/526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
+  https://github.com/mobify/mobifyjs/blob/ +
+  526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
  */
 
 d = document;
 
 w = window;
 
-if ((d.attachEvent ? d.readyState === "complete" : d.readyState !== "loading")) {
+if (d.attachEvent) {
+    runable = d.readyState === "complete";
+} else {
+    runable = d.readyState !== "loading";
+}
+
+if (runable) {
     runReady();
 } else {
     if (!w.document.addEventListener) {
@@ -220,8 +228,8 @@ if ((d.attachEvent ? d.readyState === "complete" : d.readyState !== "loading")) 
  */
 
 junction.fn.data = function (name, value) {
-    if (name !== undefined) {
-        if (value !== undefined) {
+    if (name !== void 0) {
+        if (value !== void 0) {
             return this.each(function () {
                 if (!this.junctionData) {
                     this.junctionData = {};
@@ -232,14 +240,14 @@ junction.fn.data = function (name, value) {
             if (this[0] && this[0].junctionData) {
                 return this[0].junctionData[name];
             } else {
-                return undefined;
+                return void 0;
             }
         }
     } else {
         if (this[0]) {
             return this[0].junctionData || {};
         } else {
-            return undefined;
+            return void 0;
         }
     }
 };
@@ -257,8 +265,8 @@ junction.fn.data = function (name, value) {
 
 junction.fn.removeData = function (name) {
     return this.each(function () {
-        if (name !== undefined && this.junctionData) {
-            this.junctionData[name] = undefined;
+        if (name !== void 0 && this.junctionData) {
+            this.junctionData[name] = void 0;
             delete this.junctionData[name];
         } else {
             this[0].junctionData = {};
@@ -284,9 +292,11 @@ xmlHttp = function () {
   NOTE** the following options are supported:
 
   - *method* - The HTTP method used with the request. Default: `GET`.
-  - *data* - Raw object with keys and values to pass with request. Default `null`.
+  - *data* - Raw object with keys and values to pass with request
+      Default `null`.
   - *async* - Whether the opened request is asynchronouse. Default `true`.
-  - *success* - Callback for successful request and response. Passed the response data.
+  - *success* - Callback for successful request and response
+      Passed the response data.
   - *error* - Callback for failed request and response.
   - *cancel* - Callback for cancelled request and response.
 
@@ -345,7 +355,8 @@ junction.ajax.settings = {
 
 /*
 
-  Helper function wrapping a call to [ajax](ajax.js.html) using the `GET` method.
+  Helper function wrapping a call to [ajax](ajax.js.html)
+  using the `GET` method.
 
   @param {string} url The url to GET from.
   @param {function} callback Callback to invoke on success.
@@ -391,7 +402,8 @@ junction.fn.load = function (url, callback) {
 
 /*
 
-  Helper function wrapping a call to [ajax](ajax.js.html) using the `POST` method.
+  Helper function wrapping a call to [ajax](ajax.js.html)
+  using the `POST` method.
 
   @param {string} url The url to POST to.
   @param {object} data The data to send.
@@ -447,7 +459,7 @@ junction.fn.addClass = function (className) {
         var klass, regex, withoutClass, _i, _len;
         for (_i = 0, _len = classes.length; _i < _len; _i++) {
             klass = classes[_i];
-            if (this.className !== undefined) {
+            if (this.className !== void 0) {
                 klass = klass.trim();
                 regex = new RegExp("(?:^| )(" + klass + ")(?: |$)");
                 withoutClass = !this.className.match(regex);
@@ -475,7 +487,7 @@ junction.fn.addClass = function (className) {
  */
 
 junction.fn.after = function (fragment) {
-    if (typeof fragment === "string" || fragment.nodeType !== undefined) {
+    if (typeof fragment === "string" || fragment.nodeType !== void 0) {
         fragment = junction(fragment);
     }
     if (fragment.length > 1) {
@@ -1744,8 +1756,10 @@ junction.fn.wrapInner = function (html) {
   Bind a callback to an event for the currrent set of elements.
 
   @param {string} evt The event(s) to watch for.
-  @param {object,function} data Data to be included with each event or the callback.
-  @param {function} originalCallback Callback to be invoked when data is define.d.
+  @param {object,function} data Data to be included
+    with each event or the callback.
+  @param {function} originalCallback Callback to be
+    invoked when data is define.d.
   @return junction
   @this junction
  */
@@ -1855,14 +1869,16 @@ junction.fn.bind = function (evt, data, originalCallback) {
         return result;
     };
     propChange = function (originalEvent, boundElement, namespace) {
-        var boundCheckElement, lastEventInfo, triggeredElement;
+        var bnChEl, boundCheckElement, lastEventInfo, trEl, triggeredElement;
         lastEventInfo = document.documentElement[originalEvent.propertyName];
         triggeredElement = lastEventInfo.el;
         boundCheckElement = boundElement;
         if (boundElement === document && triggeredElement !== document) {
             boundCheckElement = document.documentElement;
         }
-        if (triggeredElement !== undefined && junction(triggeredElement).closest(boundCheckElement).length) {
+        trEl = triggeredElement;
+        bnChEl = boundCheckElement;
+        if (trEl !== void 0 && junction(trEl).closest(bnChEl).length) {
             originalEvent._namespace = lastEventInfo._namespace;
             originalEvent._args = lastEventInfo._args;
             encasedCallback.call(boundElement, originalEvent, namespace, triggeredElement);
@@ -2016,7 +2032,7 @@ junction.fn.unbind = function (event, callback) {
         for (_i = 0, _len = bound.length; _i < _len; _i++) {
             bnd = bound[_i];
             if (!namespace || namespace === bnd.namespace) {
-                if (cb === undefined || cb === bnd.originalCallback) {
+                if (cb === void 0 || cb === bnd.originalCallback) {
                     if (__indexOf.call(window, "removeEventListener") >= 0) {
                         this.removeEventListener(e, bnd.callback, false);
                     } else if (this.detachEvent) {

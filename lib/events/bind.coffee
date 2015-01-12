@@ -4,8 +4,10 @@
   Bind a callback to an event for the currrent set of elements.
 
   @param {string} evt The event(s) to watch for.
-  @param {object,function} data Data to be included with each event or the callback.
-  @param {function} originalCallback Callback to be invoked when data is define.d.
+  @param {object,function} data Data to be included
+    with each event or the callback.
+  @param {function} originalCallback Callback to be
+    invoked when data is define.d.
   @return junction
   @this junction
 
@@ -133,12 +135,20 @@ junction.fn.bind = (evt, data, originalCallback) ->
 
       boundCheckElement = document.documentElement
 
-    if triggeredElement isnt `undefined` and junction(triggeredElement).closest(boundCheckElement).length
+    trEl = triggeredElement
+    bnChEl = boundCheckElement
+
+    if trEl isnt undefined and junction(trEl).closest(bnChEl).length
 
       originalEvent._namespace = lastEventInfo._namespace
       originalEvent._args = lastEventInfo._args
 
-      encasedCallback.call boundElement, originalEvent, namespace, triggeredElement
+      encasedCallback.call(
+        boundElement
+        originalEvent
+        namespace
+        triggeredElement
+      )
 
     return
 

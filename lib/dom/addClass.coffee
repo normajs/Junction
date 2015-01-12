@@ -15,7 +15,7 @@ junction.fn.addClass = (className) ->
 
     for klass in classes
 
-      if this.className isnt `undefined`
+      if this.className isnt undefined
         klass = klass.trim()
         regex = new RegExp("(?:^| )(" + klass + ")(?: |$)")
 

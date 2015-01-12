@@ -12,8 +12,8 @@
 
 junction.fn.removeData = (name) ->
   @each ->
-    if name isnt `undefined` and @junctionData
-      @junctionData[name] = `undefined`
+    if name isnt undefined and @junctionData
+      @junctionData[name] = undefined
       delete @junctionData[name]
       return
     else

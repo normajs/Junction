@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/normajs/junction",
   "dependencies": {
-    "norma-browser-sync": "^0.1.0",
-    "norma-casperjs": "git://github.com/NewSpring/norma-casperjs",
-    "norma-javascript": "^0.1.1"
+    "norma-browser-sync": "^0.2.0",
+    "norma-casperjs": "^0.1.2",
+    "norma-javascript": "^0.2.1"
   },
   "devDependencies": {}
 }

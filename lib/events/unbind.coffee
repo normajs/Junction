@@ -24,7 +24,7 @@ junction.fn.unbind = (event, callback) ->
 
       if !namespace or namespace is bnd.namespace
 
-        if cb is `undefined` or cb is bnd.originalCallback
+        if cb is undefined or cb is bnd.originalCallback
 
           if "removeEventListener" in window
 
@@ -34,9 +34,13 @@ junction.fn.unbind = (event, callback) ->
 
             this.detachEvent "on#{e}", bnd.callback
 
-            if bound.length is 1 and this.junctionData.loop and this.junctionData.loop[e]
+            if (bound.length is 1 and
+              this.junctionData.loop and
+              this.junctionData.loop[e]
+            )
 
-              document.documentElement.detachEvent("onpropertychange", this.junctionData.loop[e])
+              document.documentElement
+                .detachEvent("onpropertychange", this.junctionData.loop[e])
 
           matched.push j
       return

@@ -16,7 +16,12 @@ junction.fn.triggerHandler = (event, args) ->
   el = this[0]
   ret - undefined
 
-  if document.createEvent and el.shoestringData and el.shoestringData.events and el.shoestringData.events[e]
+  if (document.createEvent and
+    el.shoestringData and
+    el.shoestringData.events and
+    el.shoestringData.events[e]
+  )
+
     bindings = el.shoestringData.events[e]
 
     for i of bindings

@@ -17,9 +17,11 @@ xmlHttp = ->
   NOTE** the following options are supported:
 
   - *method* - The HTTP method used with the request. Default: `GET`.
-  - *data* - Raw object with keys and values to pass with request. Default `null`.
+  - *data* - Raw object with keys and values to pass with request
+      Default `null`.
   - *async* - Whether the opened request is asynchronouse. Default `true`.
-  - *success* - Callback for successful request and response. Passed the response data.
+  - *success* - Callback for successful request and response
+      Passed the response data.
   - *error* - Callback for failed request and response.
   - *cancel* - Callback for cancelled request and response.
 

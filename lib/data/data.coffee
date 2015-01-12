@@ -12,17 +12,20 @@
 ###
 
 junction.fn.data = (name, value) ->
-  if name isnt `undefined`
+  if name isnt undefined
 
-    if value isnt `undefined`
+    if value isnt undefined
       @each ->
         @junctionData = {}  unless @junctionData
         @junctionData[name] = value
         return
 
     else
-      (if @[0] and @[0].junctionData then @[0].junctionData[name] else `undefined`)
+      if @[0] and @[0].junctionData
+        @[0].junctionData[name]
+      else
+        undefined
 
 
   else
-    (if @[0] then @[0].junctionData or {} else `undefined`)
+    (if @[0] then @[0].junctionData or {} else undefined)
