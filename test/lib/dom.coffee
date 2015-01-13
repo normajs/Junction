@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 4, (test) ->
+casper.test.begin "DOM Testing", 9, (test) ->
 
 
   casper.start()
@@ -56,25 +56,21 @@ casper.test.begin "DOM Testing", 4, (test) ->
         junction("#test").append("<div id='foo-before'></div>")
         junction("#foo-before").after("<div id='foo-after'></div>")
 
-        # $fixture.children().each (i) ->
-        #   if shoestring(this).is(".after")
-        #     equal $fixture.children()[i + 1].className, "foo-after"
-        #     equal $fixture.children()[i + 2].className, "foo-after2"
-        #   return
-
       testElement = @.evaluate ->
         te = document.getElementById("foo-before")
         temp = te.nextSibling
         return temp
 
-      test.assertEquals testElement.attributes[0].textContent, "foo-after", ["After is successful"]
-
-      # test.assertExists "#foo-after", ["After is successful"]
+      test.assertEquals testElement.attributes[0].textContent,
+                        "foo-after",
+                        ["After is successful"]
 
       return
 
 
     # APPEND ------------------------------------------------------------------
+
+    # The APPEND function adds the element as the last child of the selected item
 
     .then ->
 
@@ -108,14 +104,73 @@ casper.test.begin "DOM Testing", 4, (test) ->
 
     # APPENDTO ----------------------------------------------------------------
 
-    # .then ->
-    #
-    #   @.evaluate ->
-    #
-    #     junction("body")
+    # The APPENDTO function works the same as the APPEND function...just
+    # is written backwards.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("<div id='appendTo'></div>").appendTo("body")
+
+      test.assertExists "#appendTo", ["AppendTo is successful"]
+
+      return
+
 
     # ATTR --------------------------------------------------------------------
+
+    # The ATTR function gets the value of the first element of the set or
+    # sets the value of all the elements in the set.
+
+    .then ->
+
+      # should return null if the item doesn't exist
+      theThing = @.evaluate ->
+
+        junction("#this_does_not_exist").attr("class")
+
+      test.assertEquals theThing, null, ["Attr 1 is successful"]
+
+      # should get the attribute
+      theThing = @.evaluate ->
+
+        junction("#test").attr("class")
+
+      test.assertEquals theThing, "testing", ["Attr 2 is successful"]
+
+      # should set the attribute
+      theThing = @.evaluate ->
+
+        junction("#test").attr("class", "foo").attr("class")
+
+      test.assertEquals theThing, "foo", ["Attr 3 is successful"]
+
+      return
+
+
     # BEFORE ------------------------------------------------------------------
+
+    # The BEFORE function adds the designated markup BEFORE the selected item.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='before'></div>")
+        junction("#before").append("<div id='foo-after2'></div>")
+        junction("#foo-after2").before("<div id='foo-before2'></div>")
+
+      testElement = @.evaluate ->
+        te = document.getElementById("foo-after2")
+        temp = te.previousSibling
+        return temp
+
+      test.assertEquals testElement.attributes[0].textContent,
+                        "foo-before2",
+                        ["Before is successful"]
+
+      return
     # CHILDREN ----------------------------------------------------------------
     # CLONE -------------------------------------------------------------------
     # CLOSEST -----------------------------------------------------------------
