@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 16, (test) ->
+casper.test.begin "DOM Testing", 17, (test) ->
 
 
   casper.start()
@@ -294,6 +294,27 @@ casper.test.begin "DOM Testing", 16, (test) ->
 
 
     # FILTER ------------------------------------------------------------------
+
+    # The FILTER function filters out the selected set if it does NOT match
+    # the specified element.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='filter'></div>")
+        junction("#filter").append("<div id='filterChild'></div>")
+
+      numberOfDivs = @.evaluate ->
+
+        test = junction("div")
+        return test.filter("#filterChild").length
+
+      test.assertEqual numberOfDivs, 1, ["Filter is successful"]
+
+      return
+
+
     # FIND --------------------------------------------------------------------
     # FIRST -------------------------------------------------------------------
     # GET ---------------------------------------------------------------------
