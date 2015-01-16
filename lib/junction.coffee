@@ -48,15 +48,29 @@ do ->
         if context
           return junction(context).find selector
 
-        # id only selector
-        if selector[0] is "#" and selector.split(" ").length is 1
-          idString = selector.split("#")
-          idString.shift()
-          returnElements = [document.getElementById idString]
+        rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/
+
+        # faster selectors
+        if match = rquickExpr.exec( selector )
+
+          if (m = match[1])
+
+            elements = [ document.getElementById m ]
+
+          else if ( match[2] )
+
+            elements = document.getElementsByTagName selector
+
+
+          else if (m = match[3])
+
+            elements = document.getElementsByClassName m
+
         else
           elements = document.querySelectorAll selector
 
-          returnElements = (element for element in elements)
+
+        returnElements = (element for element in elements)
 
       else if (Object::toString.call(selector) is "[object Array]" or
         selectorType is "object" and
@@ -89,6 +103,22 @@ do ->
 
 
   window["junction"] = junction
+
+    # Map over junction in case of overwrite
+  _junction = window.junction
+
+  # Map over the $ in case of overwrite
+  _$ = window.$
+
+  junction.noConflict = (deep) ->
+    
+    if window.$ is junction
+      window.$ = _$
+
+    if deep and window.junction is junction
+      window.junction = _junction
+
+    junction
 
 #= require_tree ./core
 #= require_tree ./utilities

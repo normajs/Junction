@@ -10,17 +10,27 @@ junction.fn.find = function (selector) {
     var returns;
     returns = [];
     this.each(function () {
-        var e, finds, found, _i, _len, _results;
+        var e, elements, found, m, match, rquickExpr, _i, _len, _results;
         try {
-            finds = this.querySelectorAll(selector);
+            rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
+            if (match = rquickExpr.exec(selector)) {
+                if ((m = match[1])) {
+                    elements = [document.getElementById(m)];
+                } else if (match[2]) {
+                    elements = this.getElementsByTagName(selector);
+                } else if ((m = match[3])) {
+                    elements = this.getElementsByClassName(m);
+                }
+            } else {
+                elements = this.querySelectorAll(selector);
+            }
         } catch (_error) {
             e = _error;
-            junction.error("queryselector", selector);
             return false;
         }
         _results = [];
-        for (_i = 0, _len = finds.length; _i < _len; _i++) {
-            found = finds[_i];
+        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+            found = elements[_i];
             _results.push(returns = returns.concat(found));
         }
         return _results;

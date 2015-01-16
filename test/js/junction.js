@@ -19,9 +19,9 @@ var Debouncer, addToEventCache, d, initEventCache, runable, unbind, unbindAll, w
     @returns junction
     @this window
    */
-    var junction;
+    var junction, _$, _junction;
     junction = function (selector, context) {
-        var domFragment, element, elements, idString, returnElements, selectorType;
+        var domFragment, element, elements, m, match, returnElements, rquickExpr, selectorType;
         selectorType = typeof selector;
         returnElements = [];
         if (selector) {
@@ -37,22 +37,27 @@ var Debouncer, addToEventCache, d, initEventCache, runable, unbind, unbindAll, w
                 if (context) {
                     return junction(context).find(selector);
                 }
-                if (selector[0] === "#" && selector.split(" ").length === 1) {
-                    idString = selector.split("#");
-                    idString.shift();
-                    returnElements = [document.getElementById(idString)];
+                rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
+                if (match = rquickExpr.exec(selector)) {
+                    if ((m = match[1])) {
+                        elements = [document.getElementById(m)];
+                    } else if (match[2]) {
+                        elements = document.getElementsByTagName(selector);
+                    } else if ((m = match[3])) {
+                        elements = document.getElementsByClassName(m);
+                    }
                 } else {
                     elements = document.querySelectorAll(selector);
-                    returnElements = (function () {
-                        var _i, _len, _results;
-                        _results = [];
-                        for (_i = 0, _len = elements.length; _i < _len; _i++) {
-                            element = elements[_i];
-                            _results.push(element);
-                        }
-                        return _results;
-                    })();
                 }
+                returnElements = (function () {
+                    var _i, _len, _results;
+                    _results = [];
+                    for (_i = 0, _len = elements.length; _i < _len; _i++) {
+                        element = elements[_i];
+                        _results.push(element);
+                    }
+                    return _results;
+                })();
             } else if (Object.prototype.toString.call(selector) === "[object Array]" || selectorType === "object" && selector instanceof window.NodeList) {
                 returnElements = (function () {
                     var _i, _len, _results;
@@ -83,7 +88,18 @@ var Debouncer, addToEventCache, d, initEventCache, runable, unbind, unbindAll, w
         }
         return first;
     };
-    return window["junction"] = junction;
+    window["junction"] = junction;
+    _junction = window.junction;
+    _$ = window.$;
+    return junction.noConflict = function (deep) {
+        if (window.$ === junction) {
+            window.$ = _$;
+        }
+        if (deep && window.junction === junction) {
+            window.junction = _junction;
+        }
+        return junction;
+    };
 })();
 
 
@@ -1146,17 +1162,27 @@ junction.fn.find = function (selector) {
     var returns;
     returns = [];
     this.each(function () {
-        var e, finds, found, _i, _len, _results;
+        var e, elements, found, m, match, rquickExpr, _i, _len, _results;
         try {
-            finds = this.querySelectorAll(selector);
+            rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
+            if (match = rquickExpr.exec(selector)) {
+                if ((m = match[1])) {
+                    elements = [document.getElementById(m)];
+                } else if (match[2]) {
+                    elements = this.getElementsByTagName(selector);
+                } else if ((m = match[3])) {
+                    elements = this.getElementsByClassName(m);
+                }
+            } else {
+                elements = this.querySelectorAll(selector);
+            }
         } catch (_error) {
             e = _error;
-            junction.error("queryselector", selector);
             return false;
         }
         _results = [];
-        for (_i = 0, _len = finds.length; _i < _len; _i++) {
-            found = finds[_i];
+        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+            found = elements[_i];
             _results.push(returns = returns.concat(found));
         }
         return _results;

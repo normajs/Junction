@@ -31,3 +31,5 @@ shoestring
 test/js
 
 .DS_STORE
+
+out
