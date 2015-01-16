@@ -10,60 +10,38 @@
   @return junction
   @this junction
  */
-junction.fn.bind = function (evt, data, originalCallback) {
-    var addtoEventCaches, docEl, encasedCallback, evts, initEventCache, propChange, reorderEvents;
-    initEventCache = function (el, evtt) {
-        if (!el.junctionData) {
-            el.junctionData = {};
-        }
-        if (!el.junctionData.events) {
-            el.junctionData.events = {};
-        }
-        if (!el.junctionData.loop) {
-            el.junctionData.loop = {};
-        }
-        if (!el.junctionData.events[evtt]) {
-            return el.junctionData.events[evtt] = [];
-        }
-    };
-    addtoEventCaches = function (el, evtt, eventInfo) {
-        var obj;
-        obj = {};
-        obj.isCustomEvent = eventInfo.isCustomEvent;
-        obj.callback = eventInfo.callfunc;
-        obj.originalCallback = eventInfor.originalCallback;
-        obj.namespace = eventInfo.namespace;
-        el.junctionData.events[evtt].push(obj);
-        if (eventInfo.customEventLoop) {
-            return el.junctionData.loop[evtt] = eventInfo.customEventLoop;
-        }
-    };
-    console.log(addtoEventCaches);
+var addToEventCache, initEventCache;
 
-/*
-  
-    In IE8 the events trigger in a reverse order (LIFO).
-    This code unbinds and rebinds all callbacks on an
-    element in the a FIFO order.
-   */
-    reorderEvents = function (node, eventName) {
-        var event, otherEvents, _i, _results;
-        if (node.addEventListener || !node.junctionData || !node.junctionData.events) {
-            return;
-        }
-        otherEvents = node.junctionData.events[eventName] || [];
-        _results = [];
-        for (_i = otherEvents.length - 1; _i >= 0; _i += -1) {
-            event = otherEvents[_i];
-            if (!event.isCustomEvent) {
-                node.deatchEvent("on" + eventName, event.callback);
-                _results.push(node.attachEvent("on" + eventName, event.callback));
-            } else {
-                _results.push(void 0);
-            }
-        }
-        return _results;
-    };
+initEventCache = function (el, evt) {
+    if (!el.junctionData) {
+        el.junctionData = {};
+    }
+    if (!el.junctionData.events) {
+        el.junctionData.events = {};
+    }
+    if (!el.junctionData.loop) {
+        el.junctionData.loop = {};
+    }
+    if (!el.junctionData.events[evt]) {
+        return el.junctionData.events[evt] = [];
+    }
+};
+
+addToEventCache = function (el, evt, eventInfo) {
+    var obj;
+    obj = {};
+    obj.isCustomEvent = eventInfo.isCustomEvent;
+    obj.callback = eventInfo.callfunc;
+    obj.originalCallback = eventInfo.originalCallback;
+    obj.namespace = eventInfo.namespace;
+    el.junctionData.events[evt].push(obj);
+    if (eventInfo.customEventLoop) {
+        return el.junctionData.loop[evt] = eventInfo.customEventLoop;
+    }
+};
+
+junction.fn.bind = function (evt, data, originalCallback) {
+    var docEl, encasedCallback, evts;
     if (typeof data === "function") {
         originalCallback = data;
         data = null;
@@ -103,34 +81,50 @@ junction.fn.bind = function (evt, data, originalCallback) {
         function () {
             e.cancelBubble = true;
         };
-        if (originalCallback) {
-            result = originalCallback.apply(this, [e].concat(e._args));
-        } else {
-            result = false;
-        }
-        if (result === false) {
+        result = originalCallback.apply(this, [e].concat(e._args));
+        if (!result) {
             e.preventDefault();
             e.stopPropagation();
         }
         return result;
     };
-    propChange = function (originalEvent, boundElement, namespace) {
-        var bnChEl, boundCheckElement, lastEventInfo, trEl, triggeredElement;
-        lastEventInfo = document.documentElement[originalEvent.propertyName];
-        triggeredElement = lastEventInfo.el;
-        boundCheckElement = boundElement;
-        if (boundElement === document && triggeredElement !== document) {
-            boundCheckElement = document.documentElement;
+    return this.each(function () {
+        var customEventCallback, customEventLoop, domEventCallback, evnObj, evnt, namespace, oEl, split, _i, _len;
+        oEl = this;
+        for (_i = 0, _len = evts.length; _i < _len; _i++) {
+            evnt = evts[_i];
+            split = evnt.split(".");
+            evt = split[0];
+            namespace = (split.length > 0 ? split[1] : null);
+            domEventCallback = function (originalEvent) {
+                if (oEl.ssEventTrigger) {
+                    originalEvent._namespace = oEl.ssEventTrigger._namespace;
+                    originalEvent._args = oEl.ssEventTrigger._args;
+                    oEl.ssEventTrigger = null;
+                }
+                return encasedCallback.call(oEl, originalEvent, namespace);
+            };
+            customEventCallback = null;
+            customEventLoop = null;
+            initEventCache(this, evt);
+            if ("addEventListener" in this) {
+                this.addEventListener(evt, domEventCallback, false);
+            } else if (this.attachEvent) {
+                if (this["on" + evt] !== void 0) {
+                    this.attachEvent("on" + evt, domEventCallback);
+                }
+            }
+            evnObj = {
+                callfunc: customEventCallback || domEventCallback,
+                isCustomEvent: !! customEventCallback,
+                customEventLoop: customEventLoop,
+                originalCallback: originalCallback,
+                namespace: namespace
+            };
+            addToEventCache(this, evt, evnObj);
+            return;
         }
-        trEl = triggeredElement;
-        bnChEl = boundCheckElement;
-        if (trEl !== void 0 && junction(trEl).closest(bnChEl).length) {
-            originalEvent._namespace = lastEventInfo._namespace;
-            originalEvent._args = lastEventInfo._args;
-            encasedCallback.call(boundElement, originalEvent, namespace, triggeredElement);
-        }
-    };
-    console.log(addToEventCache);
+    });
 };
 
 junction.fn.on = junction.fn.bind;

@@ -44,7 +44,8 @@ junction.runReady = function () {
 
   If DOM is already ready at exec time, depends on the browser.
   From:
-  https://github.com/mobify/mobifyjs/blob/526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
+  https://github.com/mobify/mobifyjs/blob/
+  526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
  */
 
 d = document;

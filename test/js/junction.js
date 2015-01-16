@@ -2,12 +2,10 @@
 
   Junction Object Constructor
  */
-var d, runable, w, xmlHttp, __indexOf = [].indexOf ||
-function (item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-        if (i in this && this[i] === item) return i;
-    }
-    return -1;
+var Debouncer, addToEventCache, d, initEventCache, runable, unbind, unbindAll, w, xmlHttp, __bind = function (fn, me) {
+    return function () {
+        return fn.apply(me, arguments);
+    };
 };
 
 (function () {
@@ -23,7 +21,7 @@ function (item) {
    */
     var junction;
     junction = function (selector, context) {
-        var domFragment, element, elements, returnElements, selectorType;
+        var domFragment, element, elements, idString, returnElements, selectorType;
         selectorType = typeof selector;
         returnElements = [];
         if (selector) {
@@ -39,16 +37,22 @@ function (item) {
                 if (context) {
                     return junction(context).find(selector);
                 }
-                elements = document.querySelectorAll(selector);
-                returnElements = (function () {
-                    var _i, _len, _results;
-                    _results = [];
-                    for (_i = 0, _len = elements.length; _i < _len; _i++) {
-                        element = elements[_i];
-                        _results.push(element);
-                    }
-                    return _results;
-                })();
+                if (selector[0] === "#" && selector.split(" ").length === 1) {
+                    idString = selector.split("#");
+                    idString.shift();
+                    returnElements = [document.getElementById(idString)];
+                } else {
+                    elements = document.querySelectorAll(selector);
+                    returnElements = (function () {
+                        var _i, _len, _results;
+                        _results = [];
+                        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+                            element = elements[_i];
+                            _results.push(element);
+                        }
+                        return _results;
+                    })();
+                }
             } else if (Object.prototype.toString.call(selector) === "[object Array]" || selectorType === "object" && selector instanceof window.NodeList) {
                 returnElements = (function () {
                     var _i, _len, _results;
@@ -69,6 +73,7 @@ function (item) {
     };
     junction.fn = {};
     junction.state = {};
+    junction.plugins = {};
     junction.extend = function (first, second) {
         var key;
         for (key in second) {
@@ -175,7 +180,8 @@ junction.runReady = function () {
 
   If DOM is already ready at exec time, depends on the browser.
   From:
-  https://github.com/mobify/mobifyjs/blob/526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
+  https://github.com/mobify/mobifyjs/blob/
+  526841be5509e28fc949038021799e4223479f8d/src/capture.js#L128
  */
 
 d = document;
@@ -200,6 +206,237 @@ if (runable) {
     }
     w.addEventListener("load", junction.runReady, false);
 }
+
+
+/*
+@class Debouncer
+
+@author
+  James E Baxley III
+  NewSpring Church
+
+@version 0.3
+
+@note
+  Handles debouncing of events via requestAnimationFrame
+    @see http://www.html5rocks.com/en/tutorials/speed/animations/
+ */
+
+Debouncer = (function () {
+    function Debouncer(data) {
+        this.data = data;
+        this.handleEvent = __bind(this.handleEvent, this);
+        this.requestTick = __bind(this.requestTick, this);
+        this.update = __bind(this.update, this);
+        console.log(this.data);
+        window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
+        this.callback = this.data;
+        this.ticking = false;
+    }
+
+    Debouncer.prototype.update = function () {
+        this.callback && this.callback();
+        return this.ticking = false;
+    };
+
+    Debouncer.prototype.requestTick = function () {
+        if (!this.ticking) {
+            requestAnimationFrame(this.rafCallback || (this.rafCallback = this.update.bind(this)));
+            return this.ticking = true;
+        }
+    };
+
+    Debouncer.prototype.handleEvent = function () {
+        return this.requestTick();
+    };
+
+    return Debouncer;
+
+})();
+
+junction.debounce = function (callback) {
+    return new Debouncer(callback);
+};
+
+
+/*
+
+  @function flatten()
+
+  @param {Array} single or multilevel array
+
+  @return {Array} a flattened version of an array.
+
+  @note
+    Handy for getting a list of children from the nodes.
+ */
+
+junction.flatten = function (array) {
+    var element, flattened, _i, _len;
+    flattened = [];
+    for (_i = 0, _len = array.length; _i < _len; _i++) {
+        element = array[_i];
+        if (element instanceof Array) {
+            flattened = flattened.concat(this.flatten(element));
+        } else {
+            flattened.push(element);
+        }
+    }
+    return flattened;
+};
+
+junction.flattenObject = (function (_this) {
+    return function (object) {
+        var array, value;
+        array = [];
+        for (value in object) {
+            if (object.hasOwnProperty(value)) {
+                array.push(object[value]);
+            }
+        }
+        return array;
+    };
+})(this);
+
+
+/*
+
+@function getKeys()
+
+@param {Object}
+@param {value}
+
+@return {Array} array of keys that match on a certain value
+
+@note
+  helpful for searching objects
+
+
+@todo add ability to search string and multi level
+ */
+
+junction.getKeys = function (obj, val) {
+    var element, objects;
+    objects = [];
+    for (element in obj) {
+        if (!obj.hasOwnProperty(element)) {
+            continue;
+        }
+        if (obj[element] === "object") {
+            objects = objects.concat(this.getKeys(obj[element], val));
+        } else {
+            if (obj[element] === val) {
+                objects.push(element);
+            }
+        }
+    }
+    return objects;
+};
+
+
+/*
+
+  @function getQueryVariable()
+
+  @param {Val}
+
+  @return {Array} array of query values in url string matching the value
+ */
+
+junction.getQueryVariable = function (val) {
+    var query, results, vars;
+    query = window.location.search.substring(1);
+    vars = query.split("&");
+    results = vars.filter(function (element) {
+        var pair;
+        pair = element.split("=");
+        if (decodeURIComponent(pair[0]) === val) {
+            return decodeURIComponent(pair[1]);
+        }
+    });
+    return results;
+};
+
+junction.isElement = function (el) {
+    if (typeof HTMLElement === "object") {
+        return el instanceof HTMLElement;
+    } else {
+        return el && typeof el === "object" && el !== null && el.nodeType === 1 && typeof el.nodeName === "string";
+    }
+};
+
+
+/*
+
+@function isElementInView()
+
+@param {Element} element to check against
+
+@return {Boolean} if element is in view
+ */
+
+junction.isElementInView = function (element) {
+    var coords;
+    if (element instanceof jQuery) {
+        element = element.get(0);
+    }
+    coords = element.getBoundingClientRect();
+    return (Math.abs(coords.left) >= 0 && Math.abs(coords.top)) <= (window.innerHeight || document.documentElement.clientHeight);
+};
+
+
+/*
+
+  @function isMobile()
+
+  @return {Boolean} true if Mobile
+ */
+
+junction.isMobile = (function (_this) {
+    return function () {
+        return /(Android|iPhone|iPad|iPod|IEMobile)/g.test(navigator.userAgent);
+    };
+})(this);
+
+
+/*
+
+@function last()
+
+@param {Array}
+@param {Val} ** optional
+
+@return {Val} last value of array or value certain length from end
+ */
+
+junction.last = function (array, back) {
+    return array[array.length - (back || 0) - 1];
+};
+
+
+/*
+
+@function truthful()
+
+@param {Array} any array to be tested for true values
+
+@return {Array} array without false values
+
+@note
+  Handy for triming out all falsy values from an array.
+ */
+
+junction.truthful = function (array) {
+    var item, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = array.length; _i < _len; _i++) {
+        item = array[_i];
+        if (item) {
+            _results.push(item);
+        }
+    }
+    return _results;
+};
 
 
 /*
@@ -1751,60 +1988,36 @@ junction.fn.wrapInner = function (html) {
   @this junction
  */
 
-junction.fn.bind = function (evt, data, originalCallback) {
-    var addtoEventCaches, docEl, encasedCallback, evts, initEventCache, propChange, reorderEvents;
-    initEventCache = function (el, evtt) {
-        if (!el.junctionData) {
-            el.junctionData = {};
-        }
-        if (!el.junctionData.events) {
-            el.junctionData.events = {};
-        }
-        if (!el.junctionData.loop) {
-            el.junctionData.loop = {};
-        }
-        if (!el.junctionData.events[evtt]) {
-            return el.junctionData.events[evtt] = [];
-        }
-    };
-    addtoEventCaches = function (el, evtt, eventInfo) {
-        var obj;
-        obj = {};
-        obj.isCustomEvent = eventInfo.isCustomEvent;
-        obj.callback = eventInfo.callfunc;
-        obj.originalCallback = eventInfor.originalCallback;
-        obj.namespace = eventInfo.namespace;
-        el.junctionData.events[evtt].push(obj);
-        if (eventInfo.customEventLoop) {
-            return el.junctionData.loop[evtt] = eventInfo.customEventLoop;
-        }
-    };
-    console.log(addtoEventCaches);
+initEventCache = function (el, evt) {
+    if (!el.junctionData) {
+        el.junctionData = {};
+    }
+    if (!el.junctionData.events) {
+        el.junctionData.events = {};
+    }
+    if (!el.junctionData.loop) {
+        el.junctionData.loop = {};
+    }
+    if (!el.junctionData.events[evt]) {
+        return el.junctionData.events[evt] = [];
+    }
+};
 
-/*
-  
-    In IE8 the events trigger in a reverse order (LIFO).
-    This code unbinds and rebinds all callbacks on an
-    element in the a FIFO order.
-   */
-    reorderEvents = function (node, eventName) {
-        var event, otherEvents, _i, _results;
-        if (node.addEventListener || !node.junctionData || !node.junctionData.events) {
-            return;
-        }
-        otherEvents = node.junctionData.events[eventName] || [];
-        _results = [];
-        for (_i = otherEvents.length - 1; _i >= 0; _i += -1) {
-            event = otherEvents[_i];
-            if (!event.isCustomEvent) {
-                node.deatchEvent("on" + eventName, event.callback);
-                _results.push(node.attachEvent("on" + eventName, event.callback));
-            } else {
-                _results.push(void 0);
-            }
-        }
-        return _results;
-    };
+addToEventCache = function (el, evt, eventInfo) {
+    var obj;
+    obj = {};
+    obj.isCustomEvent = eventInfo.isCustomEvent;
+    obj.callback = eventInfo.callfunc;
+    obj.originalCallback = eventInfo.originalCallback;
+    obj.namespace = eventInfo.namespace;
+    el.junctionData.events[evt].push(obj);
+    if (eventInfo.customEventLoop) {
+        return el.junctionData.loop[evt] = eventInfo.customEventLoop;
+    }
+};
+
+junction.fn.bind = function (evt, data, originalCallback) {
+    var docEl, encasedCallback, evts;
     if (typeof data === "function") {
         originalCallback = data;
         data = null;
@@ -1844,34 +2057,50 @@ junction.fn.bind = function (evt, data, originalCallback) {
         function () {
             e.cancelBubble = true;
         };
-        if (originalCallback) {
-            result = originalCallback.apply(this, [e].concat(e._args));
-        } else {
-            result = false;
-        }
-        if (result === false) {
+        result = originalCallback.apply(this, [e].concat(e._args));
+        if (!result) {
             e.preventDefault();
             e.stopPropagation();
         }
         return result;
     };
-    propChange = function (originalEvent, boundElement, namespace) {
-        var bnChEl, boundCheckElement, lastEventInfo, trEl, triggeredElement;
-        lastEventInfo = document.documentElement[originalEvent.propertyName];
-        triggeredElement = lastEventInfo.el;
-        boundCheckElement = boundElement;
-        if (boundElement === document && triggeredElement !== document) {
-            boundCheckElement = document.documentElement;
+    return this.each(function () {
+        var customEventCallback, customEventLoop, domEventCallback, evnObj, evnt, namespace, oEl, split, _i, _len;
+        oEl = this;
+        for (_i = 0, _len = evts.length; _i < _len; _i++) {
+            evnt = evts[_i];
+            split = evnt.split(".");
+            evt = split[0];
+            namespace = (split.length > 0 ? split[1] : null);
+            domEventCallback = function (originalEvent) {
+                if (oEl.ssEventTrigger) {
+                    originalEvent._namespace = oEl.ssEventTrigger._namespace;
+                    originalEvent._args = oEl.ssEventTrigger._args;
+                    oEl.ssEventTrigger = null;
+                }
+                return encasedCallback.call(oEl, originalEvent, namespace);
+            };
+            customEventCallback = null;
+            customEventLoop = null;
+            initEventCache(this, evt);
+            if ("addEventListener" in this) {
+                this.addEventListener(evt, domEventCallback, false);
+            } else if (this.attachEvent) {
+                if (this["on" + evt] !== void 0) {
+                    this.attachEvent("on" + evt, domEventCallback);
+                }
+            }
+            evnObj = {
+                callfunc: customEventCallback || domEventCallback,
+                isCustomEvent: !! customEventCallback,
+                customEventLoop: customEventLoop,
+                originalCallback: originalCallback,
+                namespace: namespace
+            };
+            addToEventCache(this, evt, evnObj);
+            return;
         }
-        trEl = triggeredElement;
-        bnChEl = boundCheckElement;
-        if (trEl !== void 0 && junction(trEl).closest(bnChEl).length) {
-            originalEvent._namespace = lastEventInfo._namespace;
-            originalEvent._args = lastEventInfo._args;
-            encasedCallback.call(boundElement, originalEvent, namespace, triggeredElement);
-        }
-    };
-    console.log(addToEventCache);
+    });
 };
 
 junction.fn.on = junction.fn.bind;
@@ -2007,45 +2236,7 @@ junction.fn.triggerHandler = function (event, args) {
  */
 
 junction.fn.unbind = function (event, callback) {
-    var evts, unbind, unbindAll;
-    unbind = function (e, namespace, cb) {
-        var bnd, bound, match, matched, _i, _j, _len, _len1, _results;
-        matched = [];
-        bound = this.junctionData.events[e];
-        console.log(this.junctionData.events, e);
-        if (!bound.length) {
-            return;
-        }
-        for (_i = 0, _len = bound.length; _i < _len; _i++) {
-            bnd = bound[_i];
-            if (!namespace || namespace === bnd.namespace) {
-                if (cb === void 0 || cb === bnd.originalCallback) {
-                    if (__indexOf.call(window, "removeEventListener") >= 0) {
-                        this.removeEventListener(e, bnd.callback, false);
-                    } else if (this.detachEvent) {
-                        this.detachEvent("on" + e, bnd.callback);
-                        if (bound.length === 1 && this.junctionData.loop && this.junctionData.loop[e]) {
-                            document.documentElement.detachEvent("onpropertychange", this.junctionData.loop[e]);
-                        }
-                    }
-                    matched.push(j);
-                }
-            }
-            return;
-        }
-        _results = [];
-        for (_j = 0, _len1 = matched.length; _j < _len1; _j++) {
-            match = matched[_j];
-            _results.push(this.junctionData.events[e].splice(match, 1));
-        }
-        return _results;
-    };
-    unbindAll = function (namespace, cb) {
-        var evtKey;
-        for (evtKey in this.junctionData.events) {
-            unbind.call(this, evtKey, namespace, cb);
-        }
-    };
+    var evts;
     evts = (event ? event.split(" ") : []);
     return this.each(function () {
         var evnt, evt, namespace, split, _i, _len, _results;
@@ -2072,4 +2263,113 @@ junction.fn.unbind = function (event, callback) {
     });
 };
 
+unbind = function (e, namespace, cb) {
+    var bnd, bound, match, matched, _i, _j, _len, _len1, _results;
+    matched = [];
+    bound = this.junctionData.events[e];
+    if (!bound.length) {
+        return;
+    }
+    for (_i = 0, _len = bound.length; _i < _len; _i++) {
+        bnd = bound[_i];
+        if (!namespace || namespace === bnd.namespace) {
+            if (cb === void 0 || cb === bnd.originalCallback) {
+                if (window["removeEventListener"]) {
+                    this.removeEventListener(e, bnd.callback, false);
+                } else if (this.detachEvent) {
+                    this.detachEvent("on" + e, bnd.callback);
+                    if (bound.length === 1 && this.junctionData.loop && this.junctionData.loop[e]) {
+                        document.documentElement.detachEvent("onpropertychange", this.junctionData.loop[e]);
+                    }
+                }
+                matched.push(bound.indexOf(bnd));
+            }
+        }
+        return;
+    }
+    _results = [];
+    for (_j = 0, _len1 = matched.length; _j < _len1; _j++) {
+        match = matched[_j];
+        _results.push(this.junctionData.events[e].splice(matched.indexOf(match), 1));
+    }
+    return _results;
+};
+
+unbindAll = function (namespace, cb) {
+    var evtKey;
+    for (evtKey in this.junctionData.events) {
+        unbind.call(this, evtKey, namespace, cb);
+    }
+};
+
 junction.fn.off = junction.fn.unbind;
+
+junction.addModel = function (scope, model, attr, cb, force) {
+    var target, _i, _len, _ref;
+    _ref = scope.querySelectorAll(attr);
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        this.nameSpace(target, attr, model, force);
+    }
+    if (scope.querySelectorAll(attr).length) {
+        if (typeof cb === "function") {
+            return cb();
+        }
+    }
+};
+
+junction.addPlugin = function (name, obj, attr, cb) {
+    var plugin, savePlugin, _i, _len, _ref;
+    savePlugin = (function (_this) {
+        return function (name, obj, attr, cb) {
+            return _this['plugins'][name] = {
+                _id: name,
+                model: obj,
+                attr: attr,
+                callback: cb
+            };
+        };
+    })(this);
+    if (this.plugins.length) {
+        _ref = this.plugins;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            plugin = _ref[_i];
+            if (plugin._id === obj.name) {
+                savePlugin(name, obj, attr, cb);
+            }
+            this.addModel(document, obj, attr, cb);
+            return;
+        }
+    } else {
+        savePlugin(name, obj, attr, cb);
+    }
+    return this.addModel(document, obj, attr, cb);
+};
+
+junction.nameSpace = function (target, attribute, obj, force) {
+    var originalAttr, params;
+    originalAttr = attribute.replace(/[\[\]']+/g, '');
+    params = target.attributes[originalAttr].value.split(',');
+    params = params.map(function (param) {
+        return param.trim();
+    });
+    attribute = originalAttr.split('-');
+    if (!this[attribute[1]]) {
+        this[attribute[1]] = {};
+    }
+    if (!this[attribute[1]][params[0]] || force) {
+        this[attribute[1]][params[0]] = null;
+        return this[attribute[1]][params[0]] = new obj(target, originalAttr);
+    }
+};
+
+junction.updateModels = function (scope, force) {
+    var plugin, _i, _len, _ref, _results;
+    _ref = this.flattenObject(this['plugins']);
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        plugin = _ref[_i];
+        _results.push(this.addModel(scope, plugin.model, plugin.attr, false, force));
+    }
+    return _results;
+};

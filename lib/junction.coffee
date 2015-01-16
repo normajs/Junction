@@ -48,9 +48,15 @@ do ->
         if context
           return junction(context).find selector
 
-        elements = document.querySelectorAll selector
+        # id only selector
+        if selector[0] is "#" and selector.split(" ").length is 1
+          idString = selector.split("#")
+          idString.shift()
+          returnElements = [document.getElementById idString]
+        else
+          elements = document.querySelectorAll selector
 
-        returnElements = (element for element in elements)
+          returnElements = (element for element in elements)
 
       else if (Object::toString.call(selector) is "[object Array]" or
         selectorType is "object" and
@@ -71,6 +77,7 @@ do ->
 
   junction.fn = {}
   junction.state = {}
+  junction.plugins = {}
 
   junction.extend = (first, second) ->
 
@@ -84,7 +91,9 @@ do ->
   window["junction"] = junction
 
 #= require_tree ./core
+#= require_tree ./utilities
 #= require_tree ./data
 #= require_tree ./ajax
 #= require_tree ./dom
 #= require_tree ./events
+#= require_tree ./plugins
