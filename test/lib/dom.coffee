@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 9, (test) ->
+casper.test.begin "DOM Testing", 17, (test) ->
 
 
   casper.start()
@@ -95,6 +95,7 @@ casper.test.begin "DOM Testing", 9, (test) ->
       #   @echo result
 
       @.evaluate ->
+
         junction("body").append "<div id=\"second\"></div>"
 
       test.assertExists "#second", ["Append is successful"]
@@ -130,21 +131,21 @@ casper.test.begin "DOM Testing", 9, (test) ->
 
         junction("#this_does_not_exist").attr("class")
 
-      test.assertEquals theThing, null, ["Attr 1 is successful"]
+      test.assertEquals theThing, null, ["Attr returns null if the item doesn't exist"]
 
       # should get the attribute
       theThing = @.evaluate ->
 
         junction("#test").attr("class")
 
-      test.assertEquals theThing, "testing", ["Attr 2 is successful"]
+      test.assertEquals theThing, "testing", ["Attr successfully get the attribute"]
 
       # should set the attribute
       theThing = @.evaluate ->
 
         junction("#test").attr("class", "foo").attr("class")
 
-      test.assertEquals theThing, "foo", ["Attr 3 is successful"]
+      test.assertEquals theThing, "foo", ["Attr successfully sets an attribute"]
 
       return
 
@@ -171,17 +172,149 @@ casper.test.begin "DOM Testing", 9, (test) ->
                         ["Before is successful"]
 
       return
+
+
     # CHILDREN ----------------------------------------------------------------
+
+    # The CHILDREN function gets the children of the current element
+
+    .then ->
+
+      numOfChildren = @.evaluate ->
+
+        test = junction("#before")
+        test.html("<div id='el'></div>")
+        element = junction("#el")
+        return test.children().length
+
+      test.assertEquals numOfChildren, 1, ["Children is successful"]
+
+      return
+
+
     # CLONE -------------------------------------------------------------------
+
+    # The CLONE function creates a new junction object containing the currently
+    # selected elements
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='clone'></div>")
+        junction("#clone").addClass("clone")
+
+      clonedClass = @.evaluate ->
+
+        element = junction("#clone").clone()
+        element.attr("class", "foo").attr("class")
+        return element.attr("class")
+
+      originalClass = @.evaluate ->
+
+        element = junction("#clone")
+        return element.attr("class")
+
+      test.assertEquals clonedClass, "foo", ["Clone is successful"]
+      test.assertEquals originalClass, "clone", ["Clone doesn't modify original set"]
+
+      return
+
+
     # CLOSEST -----------------------------------------------------------------
-    # /CSS/EXCEPTIONS ---------------------------------------------------------
-    # /CSS/GETCOMPUTEDSTYLE ---------------------------------------------------
-    # /CSS/GETSTYLE -----------------------------------------------------------
-    # /CSS/SETSTYLE -----------------------------------------------------------
+
+    # The CLOSEST function looks in the current set of elements and it's
+    # parents for the first element that matches.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='closest'></div>")
+        junction("#closest").append("<div id='closestChildOne'></div>")
+        junction("#closest").append("<div id='closestChildTwo'></div>")
+
+      closestDiv = @.evaluate ->
+
+        return junction("#closestChildOne").closest("#closest")
+
+      test.assertEquals closestDiv[0].id, "closest", ["Closest is successful"]
+
+      return
+
+
     # CSS ---------------------------------------------------------------------
-    # DIMENSION ---------------------------------------------------------------
+
+    # The CSS function gets and/or sets the style from the selected element
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='css'></div>")
+        junction("#css").css("margin-top", "2px")
+
+      testThing = @.evaluate ->
+
+        test = junction("#css")
+        return junction._getStyle(test[0], "margin-top")
+
+      test.assertEqual testThing, "2px", ["Css is successful"]
+
+      return
+
+
     # EQ ----------------------------------------------------------------------
+
+    # The EQ function returns the item at the specified index in a junction object
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='eq'></div>")
+
+      testThing = @.evaluate ->
+
+        return junction("#eq")
+
+      testThing2 = @.evaluate ->
+
+        return junction("#eq").eq(0)
+
+      testThing3 = @.evaluate ->
+
+        return junction("#eq").eq(100000)
+
+      test.assertEqual testThing2[0], testThing[0], ["Eq is successful"]
+
+      test.assertEqual testThing3[0], undefined, ["Eq out of range is undefined"]
+
+      return
+
+
     # FILTER ------------------------------------------------------------------
+
+    # The FILTER function filters out the selected set if it does NOT match
+    # the specified element.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='filter'></div>")
+        junction("#filter").append("<div id='filterChild'></div>")
+
+      numberOfDivs = @.evaluate ->
+
+        test = junction("div")
+        return test.filter("#filterChild").length
+
+      test.assertEqual numberOfDivs, 1, ["Filter is successful"]
+
+      return
+
+
     # FIND --------------------------------------------------------------------
     # FIRST -------------------------------------------------------------------
     # GET ---------------------------------------------------------------------
