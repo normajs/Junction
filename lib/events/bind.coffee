@@ -13,37 +13,39 @@
 
 ###
 
-initEventCache = (el, evt) ->
-
-  if !el.junctionData
-    el.junctionData = {}
-
-  if !el.junctionData.events
-    el.junctionData.events = {}
-
-  if !el.junctionData.loop
-    el.junctionData.loop = {}
-
-  if !el.junctionData.events[evt]
-    el.junctionData.events[evt] = []
-
-
-addToEventCache = (el, evt, eventInfo) ->
-
-  obj = {}
-
-  obj.isCustomEvent = eventInfo.isCustomEvent
-  obj.callback = eventInfo.callfunc
-  obj.originalCallback = eventInfo.originalCallback
-  obj.namespace = eventInfo.namespace
-
-  el.junctionData.events[evt].push obj
-
-  if eventInfo.customEventLoop
-    el.junctionData.loop[evt] = eventInfo.customEventLoop
 
 
 junction.fn.bind = (evt, data, originalCallback) ->
+
+
+  initEventCache = (el, evt) ->
+
+    if !el.junctionData
+      el.junctionData = {}
+
+    if !el.junctionData.events
+      el.junctionData.events = {}
+
+    if !el.junctionData.loop
+      el.junctionData.loop = {}
+
+    if !el.junctionData.events[evt]
+      el.junctionData.events[evt] = []
+
+
+  addToEventCache = (el, evt, eventInfo) ->
+
+    obj = {}
+
+    obj.isCustomEvent = eventInfo.isCustomEvent
+    obj.callback = eventInfo.callfunc
+    obj.originalCallback = eventInfo.originalCallback
+    obj.namespace = eventInfo.namespace
+
+    el.junctionData.events[evt].push obj
+
+    if eventInfo.customEventLoop
+      el.junctionData.loop[evt] = eventInfo.customEventLoop
 
 
   if typeof data is "function"

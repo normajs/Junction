@@ -8,10 +8,14 @@
     "casperjs": {
       "src": "test/lib/**/*"
     },
-    "notify": {},
     "browser-sync": {
-      "root": "test/",
+      "root": "./",
       "watch": "test/**"
+    },
+    "copy": {
+      "src": "out/junction",
+      "dest": "./",
+      "ext": ["js"]
     }
   },
   "server": {

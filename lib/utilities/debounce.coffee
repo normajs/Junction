@@ -13,7 +13,7 @@
 
 ###
 
-class Debouncer
+class junction._debounce
 
   constructor: (@data) ->
     console.log @data
@@ -37,4 +37,4 @@ class Debouncer
 
 junction.debounce = (callback) ->
 
-  new Debouncer callback
+  new @_.debounce callback
