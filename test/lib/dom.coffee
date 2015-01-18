@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 17, (test) ->
+casper.test.begin "DOM Testing", 24, (test) ->
 
 
   casper.start()
@@ -316,13 +316,145 @@ casper.test.begin "DOM Testing", 17, (test) ->
 
 
     # FIND --------------------------------------------------------------------
+
+    # The FIND function finds the selected item.
+
+    .then ->
+
+      testThing = @.evaluate ->
+
+        return junction("body").find("#test").attr("class")
+
+      test.assertEquals testThing, "foo", ["Find is successful"]
+
+      return
+
+
     # FIRST -------------------------------------------------------------------
+
+    # The FIRST function returns the first element of the set.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='firstOne' class='first'></div>")
+        junction("body").append("<div id='firstTwo' class='first'></div>")
+
+      testThing = @.evaluate ->
+
+        return junction(".first").first()[0]
+
+      test.assertEquals testThing.id, "firstOne", ["First is successful"]
+
+      return
+
+
     # GET ---------------------------------------------------------------------
+
+    # The GET function returns the DOM node at the passed index.
+
+    .then ->
+
+      testThing = @.evaluate ->
+
+        return junction("#test")
+
+      getThing = @.evaluate ->
+
+        return junction("#test").get(0)
+
+      test.assertEquals getThing.id, testThing[0].id, ["Get is successful"]
+
+      return
+
+
     # HASCLASS ----------------------------------------------------------------
+
+    # The HASCLASS function tells you if a particular element has the specified
+    # class.
+
+    .then ->
+
+      hasFooClass = @.evaluate ->
+
+        return junction("#test").hasClass("foo")
+
+      test.assertEquals hasFooClass, true, ["Hasclass is successful"]
+
+      return
+
+
     # HEIGHT ------------------------------------------------------------------
-    # HIDE --------------------------------------------------------------------
+
+    # The HEIGHT function gets the height of the first element, or sets the
+    # height for everything in the set.
+
+    .then ->
+
+      setHeight = @.evaluate ->
+
+        junction("body").append("<div id='height'></div>")
+        junction("#height").height(300)
+        return junction("#height").height()
+
+      test.assertEquals setHeight, 300, ["Height is successful"]
+
+      return
+
+
     # HTML --------------------------------------------------------------------
+
+    # The HTML function gets/sets the innerHTML attribute for all the elements.
+
+    .then ->
+
+
+      @.evaluate ->
+
+        junction("body").append("<div id='html'></div>")
+        junction("#html").append("<div id='htmlChildOne'></div>")
+        junction("#html").append("<div id='htmlChildTwo'></div>")
+
+      htmlOne = @.evaluate ->
+
+        htmlOne = junction("#htmlChildOne")
+        htmlOne.innerHTML = "<div id=\"htmlTest\"></div>"
+        return htmlOne.innerHTML
+
+      htmlTwo = @.evaluate ->
+
+        htmlTwo = junction("#htmlChildTwo").html("<div id=\"htmlTest\"></div>")
+        return htmlTwo.html()
+
+      test.assertEquals htmlTwo, htmlOne, ["Html is successful"]
+
+      return
+
+
     # INDEX -------------------------------------------------------------------
+
+    # The INDEX function returns the index of the current element in the set.
+    # If you don't specify the selector it will return the first node.
+
+    .then ->
+
+      testThing = @.evaluate ->
+
+        junction("body").append("<div id='index'><div id='indexChild'></div></div>")
+        junction("#indexChild").attr("class", "first second")
+
+        __utils__.echo junction("#index").index(".first")
+        # return junction("#index").index(".first")
+        return junction("body").index()
+
+      @.echo testThing
+
+      test.assertEquals 1, 1, ["Index isn't finished yet."]
+
+      return
+
+
     # INSERTAFTER -------------------------------------------------------------
     # INSERTBEFORE ------------------------------------------------------------
     # IS ----------------------------------------------------------------------
