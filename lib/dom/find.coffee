@@ -9,19 +9,41 @@
 
 ###
 junction.fn.find = (selector) ->
-  
+
   returns = []
 
   @each ->
 
     try
-      finds = this.querySelectorAll(selector)
+      rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/
+
+      # faster selectors
+      if match = rquickExpr.exec( selector )
+
+        if (m = match[1])
+          elements = [ document.getElementById m ]
+
+        else if ( match[2] )
+
+          elements = this.getElementsByTagName selector
+
+
+        else if (m = match[3])
+
+          elements = this.getElementsByClassName m
+
+      else
+        elements = this.querySelectorAll selector
+
 
     catch e
-      junction.error "queryselector", selector
+
       return false
 
-    for found in finds
+
+    for found in elements
       returns = returns.concat found
+
+
 
   junction returns

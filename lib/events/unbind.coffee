@@ -15,8 +15,6 @@ junction.fn.unbind = (event, callback) ->
     matched = []
     bound = this.junctionData.events[e]
 
-    console.log this.junctionData.events, e
-
     if !bound.length
       return
 
@@ -26,7 +24,7 @@ junction.fn.unbind = (event, callback) ->
 
         if cb is undefined or cb is bnd.originalCallback
 
-          if "removeEventListener" in window
+          if window["removeEventListener"]
 
             this.removeEventListener e, bnd.callback, false
 
@@ -40,13 +38,17 @@ junction.fn.unbind = (event, callback) ->
             )
 
               document.documentElement
-                .detachEvent("onpropertychange", this.junctionData.loop[e])
+                .detachEvent(
+                  "onpropertychange"
+                  this.junctionData.loop[e]
+                )
 
-          matched.push j
+          matched.push bound.indexOf bnd
+
       return
 
     for match in matched
-      this.junctionData.events[e].splice match, 1
+      this.junctionData.events[e].splice matched.indexOf(match), 1
 
 
   unbindAll = (namespace, cb) ->
@@ -54,8 +56,7 @@ junction.fn.unbind = (event, callback) ->
     for evtKey of this.junctionData.events
       unbind.call this, evtKey, namespace, cb
     return
-
-
+  
 
   evts = (if event then event.split(" ") else [])
 
@@ -78,5 +79,7 @@ junction.fn.unbind = (event, callback) ->
           unbind.call this, evt, namespace, callback
         else
           unbindAll.call this, namespace, callback
+
+
 
 junction.fn.off = junction.fn.unbind

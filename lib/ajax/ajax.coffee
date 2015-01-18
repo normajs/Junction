@@ -1,13 +1,4 @@
 
-# Browser support
-xmlHttp = ->
-  try
-    return new XMLHttpRequest()
-  catch e
-    return new ActiveXObject("Microsoft.XMLHTTP")
-  return
-
-
 
 
 ###
@@ -32,6 +23,15 @@ xmlHttp = ->
 
 ###
 junction.ajax = (url, options) ->
+
+  # Browser support
+  xmlHttp = ->
+    try
+      return new XMLHttpRequest()
+    catch e
+      return new ActiveXObject("Microsoft.XMLHTTP")
+    return
+  
 
   req = xmlHttp()
   settings = junction.extend({}, junction.ajax.settings)

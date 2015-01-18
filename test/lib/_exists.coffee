@@ -8,7 +8,7 @@ casper.test.begin "Junction is present", 2, (test) ->
     # Library is present
     .then ->
 
-      @.page.injectJs("./test/js/junction.js")
+      @.page.injectJs("./out/junction.js")
 
       test.assertEvalEquals (->
         return typeof junction

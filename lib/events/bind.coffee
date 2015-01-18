@@ -12,9 +12,13 @@
   @this junction
 
 ###
+
+
+
 junction.fn.bind = (evt, data, originalCallback) ->
 
-  initEventCache = (el, evtt) ->
+
+  initEventCache = (el, evt) ->
 
     if !el.junctionData
       el.junctionData = {}
@@ -25,45 +29,23 @@ junction.fn.bind = (evt, data, originalCallback) ->
     if !el.junctionData.loop
       el.junctionData.loop = {}
 
-    if !el.junctionData.events[evtt]
-      el.junctionData.events[evtt] = []
+    if !el.junctionData.events[evt]
+      el.junctionData.events[evt] = []
 
-  addtoEventCaches = (el, evtt, eventInfo) ->
+
+  addToEventCache = (el, evt, eventInfo) ->
 
     obj = {}
 
     obj.isCustomEvent = eventInfo.isCustomEvent
     obj.callback = eventInfo.callfunc
-    obj.originalCallback = eventInfor.originalCallback
+    obj.originalCallback = eventInfo.originalCallback
     obj.namespace = eventInfo.namespace
 
-    el.junctionData.events[evtt].push obj
+    el.junctionData.events[evt].push obj
 
     if eventInfo.customEventLoop
-      el.junctionData.loop[evtt] = eventInfo.customEventLoop
-
-  console.log addtoEventCaches
-  ###
-
-    In IE8 the events trigger in a reverse order (LIFO).
-    This code unbinds and rebinds all callbacks on an
-    element in the a FIFO order.
-
-  ###
-  reorderEvents = (node, eventName) ->
-
-    if node.addEventListener or !node.junctionData or !node.junctionData.events
-      # add event listner obviates the need for all the
-      # callback order juggling
-      return
-
-    otherEvents = node.junctionData.events[eventName] or []
-
-    for event in otherEvents by -1
-
-      if !event.isCustomEvent
-        node.deatchEvent "on#{eventName}", event.callback
-        node.attachEvent "on#{eventName}", event.callback
+      el.junctionData.loop[evt] = eventInfo.customEventLoop
 
 
   if typeof data is "function"
@@ -73,11 +55,11 @@ junction.fn.bind = (evt, data, originalCallback) ->
   evts = evt.split(" ")
   docEl = document.documentElement
 
-
   # NOTE the `triggeredElement` is purely for custom events from IE
   encasedCallback = (e, namespace, triggeredElement) ->
 
-    return  if e._namespace and e._namespace isnt namespace
+    if e._namespace and e._namespace isnt namespace
+      return
 
     e.data = data
     e.namespace = e._namespace
@@ -97,6 +79,7 @@ junction.fn.bind = (evt, data, originalCallback) ->
           e.isDefaultPrevented = returnTrue
           originalPreventDefault.call e
           return
+
       else
 
         ->
@@ -112,134 +95,63 @@ junction.fn.bind = (evt, data, originalCallback) ->
       e.cancelBubble = true
       return
 
-    if originalCallback
-      result = originalCallback.apply(this, [e].concat(e._args))
-    else
-      result = false
+    result = originalCallback.apply(this, [e].concat(e._args))
 
-    if result is false
+    if !result
       e.preventDefault()
       e.stopPropagation()
-    result
 
-  # This is exclusively for custom events on
-  # browsers without addEventListener (IE8)
-  propChange = (originalEvent, boundElement, namespace) ->
+    return result
 
-    lastEventInfo = document.documentElement[originalEvent.propertyName]
 
-    triggeredElement = lastEventInfo.el
-    boundCheckElement = boundElement
+  return @each ->
 
-    if boundElement is document and triggeredElement isnt document
+    oEl = this
 
-      boundCheckElement = document.documentElement
+    for evnt in evts
 
-    trEl = triggeredElement
-    bnChEl = boundCheckElement
+      split = evnt.split "."
 
-    if trEl isnt undefined and junction(trEl).closest(bnChEl).length
+      evt = split[0]
 
-      originalEvent._namespace = lastEventInfo._namespace
-      originalEvent._args = lastEventInfo._args
+      namespace = (if split.length > 0 then split[1] else null)
 
-      encasedCallback.call(
-        boundElement
-        originalEvent
-        namespace
-        triggeredElement
-      )
+      domEventCallback = (originalEvent) ->
 
-    return
+        if oEl.ssEventTrigger
 
-  console.log addToEventCache
-  return
+          originalEvent._namespace = oEl.ssEventTrigger._namespace
+          originalEvent._args = oEl.ssEventTrigger._args
+          oEl.ssEventTrigger = null
 
-  # @each ->
-  #
-  #   oEl = this
-  #
-  #   for evnt in evts
-  #
-  #     split = evnt.split "."
-  #
-  #     evt = split[0]
-  #
-  #     namespace = (if split.length > 0 then split[1] else null)
-  #
-  #     domEventCallback = (originalEvent) ->
-  #
-  #       if oEl.ssEventTrigger
-  #
-  #         originalEvent._namespace = oEl.ssEventTrigger._namespace
-  #         originalEvent._args = oEl.ssEventTrigger._args
-  #         oEl.ssEventTrigger = null
-  #
-  #       return encasedCallback.call oEl, originalEvent, namespace
-  #
-  #     customEventCallback = null
-  #     customEventLoop = null
-  #
-  #     initEventCache this, evt
-  #
-  #     if "addEventListener" of this
-  #       this.addEventListener evt, domEventCallback, false
-  #
-  #     else if this.attachEvent
-  #
-  #       if this["on" + evt] isnt `undefined`
-  #         this.attachEvent "on" + evt, domEventCallback
-  #
-  #       else
-  #
-  #         customEventCallback = (->
-  #           eventName = evt
-  #           (e) ->
-  #             propChange e, oEl, namespace  if e.propertyName is eventName
-  #             return
-  #         )()
-  #
-  #
-  #         # only assign one onpropertychange per element
-  #         if this.junctionData.events[evt].length is 0
-  #
-  #           customEventLoop = (->
-  #             eventName = evt
-  #             (e) ->
-  #
-  #               if not oEl.junctionData or not oEl.junctionData.events
-  #                 return
-  #
-  #               events = oEl.junctionData.events[eventName]
-  #               if !events
-  #                 return
-  #
-  #               # TODO stopImmediatePropagation
-  #               j = 0
-  #               k = events.length
-  #
-  #               while j < k
-  #                 events[j].callback e
-  #                 j++
-  #               return
-  #           )()
-  #
-  #           docEl.attachEvent "onpropertychange", customEventLoop
-  #
-  #     evnObj =
-  #       callfunc: customEventCallback or domEventCallback
-  #       isCustomEvent: !!customEventCallback
-  #       customEventLoop: customEventLoop
-  #       originalCallback: originalCallback
-  #       namespace: namespace
-  #
-  #     addToEventCache this, evt, evnObj
-  #
-  #     console.log envObj
-  #
-  #
-  #
-  #     # Don’t reorder custom events, only DOM Events.
-  #     reorderEvents oEl, evt  if !customEventCallback
+        return encasedCallback.call oEl, originalEvent, namespace
+
+
+
+      customEventCallback = null
+      customEventLoop = null
+
+      initEventCache this, evt
+
+      if "addEventListener" of this
+        this.addEventListener evt, domEventCallback, false
+
+      else if this.attachEvent
+
+        if this["on" + evt] isnt undefined
+          this.attachEvent "on" + evt, domEventCallback
+
+
+      evnObj =
+        callfunc: customEventCallback or domEventCallback
+        isCustomEvent: !!customEventCallback
+        customEventLoop: customEventLoop
+        originalCallback: originalCallback
+        namespace: namespace
+
+      addToEventCache this, evt, evnObj
+
+      return
+
 
 junction.fn.on = junction.fn.bind
