@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 28, (test) ->
+casper.test.begin "DOM Testing", 29, (test) ->
 
 
   casper.start()
@@ -539,8 +539,35 @@ casper.test.begin "DOM Testing", 28, (test) ->
       return
 
 
-    # MAP ---------------------------------------------------------------------
     # NEXT --------------------------------------------------------------------
+
+    # The NEXT function returns an object with the set of siblings of each
+    # element in the original set.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='next'></div>")
+        junction(".next").append("<div class='one'></div>")
+        junction(".next").append("<div class='two'></div>")
+        junction(".next").append("<div class='three'></div>")
+
+        thing = junction("body").find(".next")
+        __utils__.echo thing.length
+        __utils__.echo thing.next().length
+
+      testElement = @.evaluate ->
+
+        return junction(".next").next()
+
+      @.echo testElement[0]
+
+      test.assertEquals 1, 1, ["Next is not finished."]
+
+      return
+
+
     # NOT ---------------------------------------------------------------------
     # OFFSET ------------------------------------------------------------------
     # OUTERWIDTH --------------------------------------------------------------
