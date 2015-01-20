@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 24, (test) ->
+casper.test.begin "DOM Testing", 28, (test) ->
 
 
   casper.start()
@@ -259,7 +259,7 @@ casper.test.begin "DOM Testing", 24, (test) ->
         test = junction("#css")
         return junction._getStyle(test[0], "margin-top")
 
-      test.assertEqual testThing, "2px", ["Css is successful"]
+      test.assertEquals testThing, "2px", ["Css is successful"]
 
       return
 
@@ -286,9 +286,9 @@ casper.test.begin "DOM Testing", 24, (test) ->
 
         return junction("#eq").eq(100000)
 
-      test.assertEqual testThing2[0], testThing[0], ["Eq is successful"]
+      test.assertEquals testThing2[0], testThing[0], ["Eq is successful"]
 
-      test.assertEqual testThing3[0], undefined, ["Eq out of range is undefined"]
+      test.assertEquals testThing3[0], undefined, ["Eq out of range is undefined"]
 
       return
 
@@ -310,7 +310,7 @@ casper.test.begin "DOM Testing", 24, (test) ->
         test = junction("div")
         return test.filter("#filterChild").length
 
-      test.assertEqual numberOfDivs, 1, ["Filter is successful"]
+      test.assertEquals numberOfDivs, 1, ["Filter is successful"]
 
       return
 
@@ -444,9 +444,7 @@ casper.test.begin "DOM Testing", 24, (test) ->
         junction("body").append("<div id='index'><div id='indexChild'></div></div>")
         junction("#indexChild").attr("class", "first second")
 
-        __utils__.echo junction("#index").index(".first")
-        # return junction("#index").index(".first")
-        return junction("body").index()
+        return junction("#index").index()
 
       @.echo testThing
 
@@ -456,14 +454,97 @@ casper.test.begin "DOM Testing", 24, (test) ->
 
 
     # INSERTAFTER -------------------------------------------------------------
+
+    # The INSERTAFTER function inserts the current set of things AFTER the
+    # matching selector.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='insertAfter'></div>")
+        junction("<div id='insertAfter2'></div>").insertAfter("#insertAfter")
+
+      testElement = @.evaluate ->
+
+        te = document.getElementById("insertAfter")
+        temp = te.nextSibling
+        return temp
+
+      test.assertEquals testElement.attributes[0].textContent,
+                        "insertAfter2",
+                        ["InsertAfter is successful."]
+
+      return
+
+
     # INSERTBEFORE ------------------------------------------------------------
+
+    # The INSERTBEFORE function inserts the current set of things BEFORE the
+    # matching selector.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='insertBefore'></div>")
+        junction("<div id='insertBefore2'></div>").insertBefore("#insertBefore")
+
+      testElement = @.evaluate ->
+
+        te = document.getElementById("insertBefore")
+        temp = te.previousSibling
+        return temp
+
+      test.assertEquals testElement.attributes[0].textContent,
+                        "insertBefore2",
+                        ["InsertBefore is successful."]
+
+      return
+
+
     # IS ----------------------------------------------------------------------
+
+    # The IS function checks to see if anything in the current set of elements
+    # matches the selector.
+
+    .then ->
+
+      testThing = @.evaluate ->
+
+        return junction("#test").is("#test")
+
+      test.assertEquals testThing, true, ["Is is success."]
+
+      return
+
+
     # LAST --------------------------------------------------------------------
+
+    # The LAST function returns the last element of a set.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div id='lastOne' class='last'></div>")
+        junction("body").append("<div id='lastTwo' class='last'></div>")
+
+      testThing = @.evaluate ->
+
+        return junction(".last").last()[0]
+
+      test.assertEquals testThing.id, "lastTwo", ["Last is successful"]
+
+      return
+
+
     # MAP ---------------------------------------------------------------------
     # NEXT --------------------------------------------------------------------
     # NOT ---------------------------------------------------------------------
     # OFFSET ------------------------------------------------------------------
     # OUTERWIDTH --------------------------------------------------------------
+    # ------------------ GET TO HERE ------------------------------------------
     # PARENT ------------------------------------------------------------------
     # PARENTS -----------------------------------------------------------------
     # PREPEND -----------------------------------------------------------------

@@ -15,7 +15,9 @@
     "copy": {
       "src": "out/junction",
       "dest": "./",
-      "ext": ["js"]
+      "ext": [
+        "js"
+      ]
     }
   },
   "server": {
