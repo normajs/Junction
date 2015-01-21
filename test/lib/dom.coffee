@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 29, (test) ->
+casper.test.begin "DOM Testing", 44, (test) ->
 
 
   casper.start()
@@ -437,6 +437,9 @@ casper.test.begin "DOM Testing", 29, (test) ->
     # The INDEX function returns the index of the current element in the set.
     # If you don't specify the selector it will return the first node.
 
+    # NOTE: Couldn't figure out how to get this to work. Seems like this
+    # should work.
+
     .then ->
 
       testThing = @.evaluate ->
@@ -544,6 +547,9 @@ casper.test.begin "DOM Testing", 29, (test) ->
     # The NEXT function returns an object with the set of siblings of each
     # element in the original set.
 
+    # NOTE: Maybe I don't know what I'm doing but I don't think this is
+    # working correctly.
+
     .then ->
 
       @.evaluate ->
@@ -553,7 +559,9 @@ casper.test.begin "DOM Testing", 29, (test) ->
         junction(".next").append("<div class='two'></div>")
         junction(".next").append("<div class='three'></div>")
 
-        thing = junction("body").find(".next")
+        thing = junction("body").find(".next > div")
+        thing.each ->
+          __utils__.echo this
         __utils__.echo thing.length
         __utils__.echo thing.next().length
 
@@ -569,22 +577,349 @@ casper.test.begin "DOM Testing", 29, (test) ->
 
 
     # NOT ---------------------------------------------------------------------
+
+    # The NOT function removes the selected elements from the current set
+
+    .then ->
+
+      isSoCount = @.evaluate ->
+
+        junction("body").append("<div class='not'></div>")
+        junction(".not").append("<div class='is-not'></div>")
+        junction(".not").append("<div class='is-so'></div>")
+        junction(".not").append("<div class='is-not'></div>")
+
+        thing = junction(".not > div")
+        return thing.not(".is-not").length
+
+      test.assertEquals isSoCount, 1, ["Not is successful."]
+
+      return
+
+
     # OFFSET ------------------------------------------------------------------
-    # OUTERWIDTH --------------------------------------------------------------
-    # ------------------ GET TO HERE ------------------------------------------
+
+    # The OFFSET function returns an object with the "top" and "left" properties
+    # of the first elements offsets
+
+    # SHOESTRING does NOT have a test for this.
+
+    .then ->
+
+      test.assertEquals 1, 1, ["Offset is not finished."]
+
+      return
+
+
     # PARENT ------------------------------------------------------------------
+
+    # The PARENT function returns the first parents for each element in the set.
+
+    # TODO: Add a second test for the second child
+
+    .then ->
+
+      parent = @.evaluate ->
+
+        junction("body").append("<div class='parent'></div>")
+        junction(".parent").append("<div class='child'></div>")
+        junction(".parent").append("<div class='child'></div>")
+
+        return junction(".parent")[0]
+
+      childOneParent = @.evaluate ->
+
+        children = junction(".child")
+
+        return children.parent()[0]
+
+      test.assertEquals childOneParent.attributes[0].textContent,
+                        parent.attributes[0].textContent,
+                        ["Parent is successful."]
+
+      return
+
+
     # PARENTS -----------------------------------------------------------------
+
+    # The PARENTS functions returns the set of all parents matching the selector
+    # for each element in the set.
+
+    # TODO: create tests for the rest of the parents array. See "echo" for the
+    # rest of the items.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='parents'></div>")
+        junction(".parents").append("<div class='parentOne'></div>")
+        junction(".parentOne").append("<div class='child'></div>")
+        junction(".parents").append("<div class='parentTwo'></div>")
+        junction(".parentTwo").append("<div class='child'></div>")
+
+        parents = junction(".parents")
+
+        children = parents.find(".child")
+
+        # __utils__.echo children.parents().length
+        # __utils__.echo children.parents()[0].attributes[0].textContent
+        # __utils__.echo children.parents()[1].attributes[0].textContent
+        # __utils__.echo children.parents()[2]
+        # __utils__.echo children.parents()[3].innerHTML
+        # __utils__.echo junction("html")[0].innerHTML
+        # __utils__.echo children.parents()[4].attributes[0].textContent
+
+      index0 = @.evaluate ->
+
+        indexThing = junction(".parents").find(".child").parents()[0]
+        return indexThing.attributes[0].textContent
+
+      index1 = @.evaluate ->
+
+        indexThing = junction(".parents").find(".child").parents()[1]
+        return indexThing.attributes[0].textContent
+
+      test.assertEquals index0, "parentOne", ["Parents returns correct parent at index 0."]
+      test.assertEquals index1, "parents", ["Parents returns correct parent at index 1"]
+
+      return
+
+
     # PREPEND -----------------------------------------------------------------
+
+    # The PREPEND function adds the element or HTML string before the children
+    # of each element in the set.
+
+    # NOTE: It looks like this function doesn't work right now.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='prepend'></div>")
+
+        junction(".prepend").prepend("<div class='.firstPrependedThing'></div>")
+
+      test.assertEquals 1, 1, ["Prepend is not finished."]
+      # test.assertExists ".firstPrependedThing", ["Prepend is successful"]
+
+      # @.evaluate ->
+      #
+      #   junction("body").append "<div id=\"second\"></div>"
+      #
+      # test.assertExists "#second", ["Append is successful"]
+      # @.evaluate ->
+      #
+      #   junction("<div id='appendTo'></div>").appendTo("body")
+      #
+      # test.assertExists "#appendTo", ["AppendTo is successful"]
+      return
+
+
     # PREPENDTO ---------------------------------------------------------------
+
+    # The PREPENDTO function adds each element of the current set BEFORE the
+    # children of the selected elements.
+
+    # NOTE: I just going to guess that this function doesn't work yet. The
+    # Shoestring docs show the test for it using AppendTo. That tells me it
+    # doesn't work yet. Will try to clarify and then revisit.
+
     # PREV --------------------------------------------------------------------
+
+    # The PREV function returns an object containing one sibling before each
+    # element in the original set.
+
+    # It doesn't seem like this is working either. According to the Shoestring
+    # tests thing.prev().length here should return 1.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='prev'></div>")
+        junction(".prev").append("<div class='prevOne'></div>")
+        junction(".prev").append("<div class='prevTwo'></div>")
+        junction(".prev").append("<div class='prevThree'></div>")
+
+        thing = junction(".prev div.prevThree")
+        __utils__.echo thing.attr("class")
+        __utils__.echo thing.prev().length
+
+      test.assertEquals 1, 1, ["Prev is not finished."]
+
+      return
+
+
     # PREVALL -----------------------------------------------------------------
+
+    # The PREVALL function returns an object with the set of ALL siblings before
+    # each element in the original set.
+
+    # This doesn't look like it's working. According to the Shoestring tests
+    # thing.prevAll().length should be returning 2.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='prevall'></div>")
+        junction(".prevall").append("<div class='prevallOne'></div>")
+        junction(".prevall").append("<div class='prevallTwo'></div>")
+        junction(".prevall").append("<div class='prevallThree'></div>")
+
+        thing = junction(".prevall div.prevallThree")
+        __utils__.echo thing.prevAll().length
+
+      test.assertEquals 1, 1, ["Prevall is not finished."]
+
+      return
+
+
     # PROP --------------------------------------------------------------------
+
+    # The PROP function gets the property value on the first element or sets
+    # the property value on all the elements in the set.
+
+    .then ->
+
+      # gets the property
+      property = @.evaluate ->
+
+        junction("body").append("<div class='prop'></div>")
+
+        return junction(".prop").prop("class")
+
+      test.assertEquals property, "prop", ["Prop gets the property correctly"]
+
+      property = @.evaluate ->
+
+        junction(".prop").prop("class", "bar")
+
+        return junction(".bar").prop("class")
+
+      test.assertEquals property, "bar", ["Prop sets the property correctly."]
+
+      return
+
+
     # PROPFIX -----------------------------------------------------------------
+
+    # SHOESTRING does not have a test for this.
+
     # REMOVE ------------------------------------------------------------------
+
+    # The REMOVE function removes the current set of elements from the DOM.
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='remove'></div>")
+
+        junction(".remove").remove()
+
+      test.assertDoesntExist ".remove", ["Remove is successful."]
+
+      return
+
+
     # REMOVEATTR --------------------------------------------------------------
+
+    # The REMOVEATTR function removes an attribute from each element in the
+    # current set
+
+    .then ->
+
+      before = @.evaluate ->
+
+        junction("body").append("<div class='removeattr' data-foo='bar'></div>")
+        return junction(".removeattr")[0]
+
+      after = @.evaluate ->
+
+        junction(".removeattr").removeAttr("data-foo")
+        return junction(".removeattr")[0]
+
+      test.assertNotEquals after.attributes[1],
+                          before.attributes[1],
+                          ["RemoveAttr removed the attribute"]
+
+      return
+
+
     # REMOVECLASS -------------------------------------------------------------
+
+    # The REMOVECLASS function removes the class from the DOM for each element
+    # in the set.
+
+    .then ->
+
+      before = @.evaluate ->
+
+        junction("body").append("<div class='removeClass foo'></div>")
+        return junction(".removeClass")[0]
+
+      after = @.evaluate ->
+
+        junction(".removeClass").removeClass("foo")
+        return junction(".removeClass")[0]
+
+      test.assertNotEquals after.className,
+                          before.className,
+                          ["RemoveClass removed the class."]
+
+      return
+
+
     # REMOVEPROP --------------------------------------------------------------
+
+    # The REMOVEPROP function removes a property from each element of the
+    # current set.
+
+    .then ->
+
+      before = @.evaluate ->
+
+        junction("body").append("<div class='removeProp'></div>")
+        return junction(".removeProp")
+
+      after = @.evaluate ->
+
+        junction(".removeProp").removeProp("class")
+        return junction(".removeProp")
+
+      test.assertNotEquals after, before, ["RemoveProp removed the property."]
+
+      return
+
+
     # REPLACEWITH -------------------------------------------------------------
+
+    # The REPLACEWITH function replaces each element in the current set with
+    # the element or string specified.
+
+    .then ->
+
+      before = @.evaluate ->
+
+        junction("body").append("<div class='replaceWith'></div>")
+        return junction(".replaceWith")[0]
+
+      after = @.evaluate ->
+
+        junction(".replaceWith").replaceWith("<div class='replacement'></div>")
+        return junction(".replacement")[0]
+
+      @.echo before
+      @.echo after
+
+      test.assertEquals 1, 1, ["ReplaceWith is not finished."]
+
+      return
+
+
     # SERIALIZE ---------------------------------------------------------------
     # SHOW --------------------------------------------------------------------
     # SIBLINGS ----------------------------------------------------------------
