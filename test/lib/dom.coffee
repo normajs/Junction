@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 45, (test) ->
+casper.test.begin "DOM Testing", 53, (test) ->
 
 
   casper.start()
@@ -1062,20 +1062,180 @@ casper.test.begin "DOM Testing", 45, (test) ->
       @.echo before.className
       @.echo after
 
-      test.assertNotEquals after, null, ["The after object isn't null"]
+      test.assertNotEquals after, null, ["ReplaceWith: The after object isn't null"]
+
+      # TODO: When this test passes, write a test to check the before and after.
 
       return
 
 
     # SERIALIZE ---------------------------------------------------------------
+
+    # The SERIALIZE function serializes child input element values into
+    # an object
+
+    .then ->
+
+      data = @.evaluate ->
+
+        junction("body").append("<div class='serialize'></div>")
+
+        testThing = junction(".serialize")
+
+        i = 0
+
+        while i < junction.inputTypes.length
+          type = junction.inputTypes[i]
+          input = "<input type='" + type + "'" + " name='" + type + "'" + " value='" + type + "'></input>"
+          testThing.append input
+          i++
+
+        otherThing = testThing.serialize()
+
+        return otherThing
+
+      test.assertEquals data["color"], "color", ["Serialize is successful."]
+
+      return
+
+
     # SIBLINGS ----------------------------------------------------------------
+
+    # The SIBLINGS function gets all of the sibling elements for each element
+    # in the current set.
+
+    .then ->
+
+      siblingCount = @.evaluate ->
+
+        junction("body").append("<div class='siblings'></div>")
+        junction(".siblings").append("<div class='siblingOne'></div>")
+        junction(".siblings").append("<div class='siblingTwo'></div>")
+        junction(".siblings").append("<div class='siblingThree'></div>")
+
+        return junction(".siblingTwo").siblings().length
+
+      test.assertEquals siblingCount, 2, ["Siblings is successful."]
+
+      return
+
+
     # TEXT --------------------------------------------------------------------
+
+    # The TEXT function recursively retrieves the text content of each element
+    # in the current set.
+
+    .then ->
+
+      containerText = @.evaluate ->
+
+        junction("body").append("<div class='text'>Some Test Text</div>")
+        return junction(".text").text()
+
+      testText = "Some Test Text"
+
+      test.assertEquals containerText, testText, ["Text is successful."]
+
+      return
+
+
     # TOGGLECLASS -------------------------------------------------------------
-    # This is only in this library. Not in SHOESTRING.
+
+    # The TOGGLECLASS function should add a class to the selected element if
+    # it isn't found or remove the class if it is found.
+
+    # Note: This is only in this library. Not in SHOESTRING.
+
+    .then ->
+
+      before = @.evaluate ->
+
+        junction("body").append("<div class='toggleClass someClass'></div>")
+        return junction(".toggleClass").prop("class")
+
+      after = @.evaluate ->
+
+        junction(".toggleClass").toggleClass("someClass")
+        return junction(".toggleClass").prop("class")
+
+      test.assertNotEquals before, after, ["ToggleClass removed the class."]
+
+      addClassBack = @.evaluate ->
+
+        junction(".toggleClass").toggleClass("someClass")
+        return junction(".toggleClass").prop("class")
+
+      test.assertNotEquals after, addClassBack, ["ToggleClass added the class"]
+
+      return
+
+
     # VAL ---------------------------------------------------------------------
+
+    # The VAL function gets the value of the first element or sets the value
+    # of all the elements in the current set.
+
+    .then ->
+
+      # Check to see that the function gets the value of the first element
+      itemValue = @.evaluate ->
+
+        junction("body").append("<input type='color' name='color' value='blue' class='val'></input>")
+        valItem = junction(".val")
+        return valItem.val()
+
+      test.assertEquals itemValue, "blue", ["Val gets a value correctly."]
+
+      # Check to see that the function sets the value on the elements.
+      itemSetValue = @.evaluate ->
+
+        valItem = junction(".val")
+        valItem.val("orange")
+        return valItem.val()
+
+      test.assertEquals itemSetValue, "orange", ["Val sets a value correctly."]
+
+      return
+
+
     # WIDTH -------------------------------------------------------------------
+
+    # The WIDTH function gets the width value of the first element or sets the
+    # width for all the elements in the current set.
+
+    .then ->
+
+      widthValue = @.evaluate ->
+
+        junction("body").append("<div class='width'></div>")
+        widthItem = junction(".width")
+        widthItem.width("400px")
+        return widthItem.width()
+
+      test.assertEquals widthValue, 400, ["Width is successful."]
+
+      return
+
+
     # WRAPINNER ---------------------------------------------------------------
 
+    # The WRAPINNER function wraps the child elements in the provided HTML
+
+    # TODO: Write a test to check if the function actually wrapped .inner
+    # with .wrapper
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("body").append("<div class='wrapinner'></div>")
+        junction(".wrapinner").append("<div class='inner'></div>")
+        wrapInnerItem = junction(".wrapinner")
+        wrapInnerItem.wrapInner("<div class='wrapper'></div>")
+
+      test.assertExists ".wrapper", ["WrapInner is successful."]
+
+      return
 
 
   casper.run ->
