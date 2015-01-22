@@ -1,5 +1,5 @@
 
-casper.test.begin "DOM Testing", 44, (test) ->
+casper.test.begin "DOM Testing", 45, (test) ->
 
 
   casper.start()
@@ -438,20 +438,39 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # If you don't specify the selector it will return the first node.
 
     # NOTE: Couldn't figure out how to get this to work. Seems like this
-    # should work.
+    # should work. The INDEX is returning null.
+
+    # From SHOESTRING:
+
+		# <div class="index">
+		# 	<div class="first"></div>
+		# 	<div class="second"></div>
+		# </div>
+
+  	# test('`.index()`', function() {
+  	# 	var $indexed = $fixture.find( ".index div" );
+  	# 	equal( $indexed.index( ".first" ), 0 ); <--- I'm testing this
+  	# 	equal( $indexed.index( ".second" ), 1 );
+    #
+  	# 	var $second = $fixture.find( ".index .second" );
+  	# 	equal( $second.index(), 1 );
+  	# });
 
     .then ->
 
       testThing = @.evaluate ->
 
-        junction("body").append("<div id='index'><div id='indexChild'></div></div>")
-        junction("#indexChild").attr("class", "first second")
+        junction("body").append("<div class='index'></div>")
+        junction(".index").append("<div class='childOne'></div>")
+        junction(".index").append("<div class='childTwo'></div>")
 
-        return junction("#index").index()
+        thing = junction(".index div")
+        return thing.index(".childOne")
 
       @.echo testThing
 
-      test.assertEquals 1, 1, ["Index isn't finished yet."]
+      # test.assertEquals 1, 1, ["Index isn't finished yet."]
+      test.assertEquals testThing, 0, ["Index is successful."]
 
       return
 
@@ -548,11 +567,36 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # element in the original set.
 
     # NOTE: Maybe I don't know what I'm doing but I don't think this is
-    # working correctly.
+    # working correctly. There are 3 things inside .next so thing.next().length
+    # should be returning 2. Instead it's returning 0.
+
+    # From SHOESTRING:
+
+    # <div class="next">
+		# 	<div class="first"></div>
+		# 	<div class="second"></div>
+		# 	<div class="third"></div>
+		# </div>
+    #
+  	# test( '`.next()`', function() {
+  	# 	var $first, $all;
+    #
+  	# 	$first = $fixture.find( ".next .first" );
+  	# 	$all = $fixture.find( ".next > div" );
+    #
+    #
+  	# 	equal( $first.next().length, 1 );
+  	# 	equal( $first.next()[0], $fixture.find(".next .second")[0]);
+    #
+  	# 	equal( $all.next().length, 2 ); <--- I'M TESTING THIS
+  	# 	equal( $all.next()[0], $fixture.find(".next .second")[0]);
+  	# 	equal( $all.next()[1], $fixture.find(".next .third")[0]);
+  	# 	equal( $all.next()[2], undefined );
+  	# });
 
     .then ->
 
-      @.evaluate ->
+      nextLength = @.evaluate ->
 
         junction("body").append("<div class='next'></div>")
         junction(".next").append("<div class='one'></div>")
@@ -560,18 +604,11 @@ casper.test.begin "DOM Testing", 44, (test) ->
         junction(".next").append("<div class='three'></div>")
 
         thing = junction("body").find(".next > div")
-        thing.each ->
-          __utils__.echo this
-        __utils__.echo thing.length
-        __utils__.echo thing.next().length
+        return thing.next().length
 
-      testElement = @.evaluate ->
+      @.echo nextLength
 
-        return junction(".next").next()
-
-      @.echo testElement[0]
-
-      test.assertEquals 1, 1, ["Next is not finished."]
+      test.assertEquals nextLength, 2, ["Next is successful."]
 
       return
 
@@ -693,6 +730,30 @@ casper.test.begin "DOM Testing", 44, (test) ->
 
     # NOTE: It looks like this function doesn't work right now.
 
+    # From SHOESTRING:
+
+		# <div class="prepend">
+		# </div>
+    #
+    # test( '`.prepend() adds a first child element', function() {
+  	# 	var tmp, $prepend = $fixture.find( ".prepend" );
+    #
+  	# 	tmp = $(	"<div class='first'></div>" );
+  	# 	$prepend.append( tmp[0] );
+  	# 	$prepend.append( "<div class='second'></div>" );
+  	# 	$prepend.append( ".testel" );
+    #
+  	# 	equal( $prepend.find( ".first" )[0], tmp[0] );
+  	# 	equal( $prepend.find( ".second" ).length, 1 );
+  	# 	equal( $prepend.find( ".testel" ).length, 1 );
+  	# });
+
+    # Interestingly, they don't actually test with .prepend here. This may
+    # may not work on their end either.
+
+    # As a first step I'm just trying to test whether or not the item was
+    # actually added to the DOM. That is failing.
+
     .then ->
 
       @.evaluate ->
@@ -701,19 +762,9 @@ casper.test.begin "DOM Testing", 44, (test) ->
 
         junction(".prepend").prepend("<div class='.firstPrependedThing'></div>")
 
-      test.assertEquals 1, 1, ["Prepend is not finished."]
-      # test.assertExists ".firstPrependedThing", ["Prepend is successful"]
+      # test.assertEquals 1, 1, ["Prepend is not finished."]
+      test.assertExists ".firstPrependedThing", ["Prepend is successful"]
 
-      # @.evaluate ->
-      #
-      #   junction("body").append "<div id=\"second\"></div>"
-      #
-      # test.assertExists "#second", ["Append is successful"]
-      # @.evaluate ->
-      #
-      #   junction("<div id='appendTo'></div>").appendTo("body")
-      #
-      # test.assertExists "#appendTo", ["AppendTo is successful"]
       return
 
 
@@ -726,6 +777,29 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # Shoestring docs show the test for it using AppendTo. That tells me it
     # doesn't work yet. Will try to clarify and then revisit.
 
+    # From SHOESTRING:
+
+  	# test( '`.prependTo() adds the all elements to the selected element` ', function() {
+  	# 	var tmp, $prepend = $fixture.find( ".prepend" );
+    #
+  	# 	tmp = $(	"<div class='first'></div>" );
+    #
+  	# 	tmp.appendTo( "#qunit-fixture > .prepend" );
+    #
+  	# 	equal( $prepend.find( ".first" )[0], tmp[0] );
+  	# });
+
+    .then ->
+
+      @.evaluate ->
+
+        junction("<div class='prependTo'></div>").prependTo("body")
+
+      test.assertExists ".prependTo", ["PrependTo is successful."]
+
+      return
+
+
     # PREV --------------------------------------------------------------------
 
     # The PREV function returns an object containing one sibling before each
@@ -734,9 +808,34 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # It doesn't seem like this is working either. According to the Shoestring
     # tests thing.prev().length here should return 1.
 
+    # From SHOESTRING:
+
+		# <div class="prev">
+		# 	<div class="first"></div>
+		# 	<div class="second"></div>
+		# 	<div class="third"></div>
+		# </div>
+
+  	# test( '`.prev()`', function() {
+  	# 	var $last, $all;
+    #
+  	# 	$last = $fixture.find( ".prev div.third" );
+  	# 	$all = $fixture.find( ".prev > div" );
+    #
+  	# 	equal( $last.prev().length, 1 ); <--- I'M TESTING THIS
+  	# 	equal( $last.prev()[0], $fixture.find(".prev .second")[0]);
+    #
+  	# 	// ordering correct according to jquery api
+  	# 	// http://api.jquery.com/prev/
+  	# 	equal( $all.prev().length, 2 );
+  	# 	equal( $all.prev()[0], $fixture.find(".prev .first")[0]);
+  	# 	equal( $all.prev()[1], $fixture.find(".prev .second")[0]);
+  	# 	equal( $all.prev()[2], undefined );
+  	# });
+
     .then ->
 
-      @.evaluate ->
+      prevLength = @.evaluate ->
 
         junction("body").append("<div class='prev'></div>")
         junction(".prev").append("<div class='prevOne'></div>")
@@ -744,10 +843,12 @@ casper.test.begin "DOM Testing", 44, (test) ->
         junction(".prev").append("<div class='prevThree'></div>")
 
         thing = junction(".prev div.prevThree")
-        __utils__.echo thing.attr("class")
-        __utils__.echo thing.prev().length
 
-      test.assertEquals 1, 1, ["Prev is not finished."]
+        return thing.prev().length
+
+      @.echo prevLength
+
+      test.assertEquals prevLength, 1, ["Prev is successful."]
 
       return
 
@@ -760,9 +861,31 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # This doesn't look like it's working. According to the Shoestring tests
     # thing.prevAll().length should be returning 2.
 
+    # From SHOESTRING:
+
+		# <div class="prevall">
+		# 	<div class="first"></div>
+		# 	<div class="second"></div>
+		# 	<div class="third"></div>
+		# </div>
+
+  	# test( '`.prevAll()`', function() {
+  	# 	var $last;
+    #
+  	# 	$last = $fixture.find( ".prevall div.third" );
+    #
+  	# 	equal( $last.prevAll().length, 2 ); <--- I"M TESTING THIS
+    #
+  	# 	// ordering correct according to jquery api
+  	# 	// http://api.jquery.com/prevall/
+  	# 	equal( $last.prevAll()[0], $fixture.find(".prevall .second")[0]);
+  	# 	equal( $last.prevAll()[1], $fixture.find(".prevall .first")[0]);
+  	# 	equal( $last.prevAll()[2], undefined );
+  	# });
+
     .then ->
 
-      @.evaluate ->
+      prevAllLength = @.evaluate ->
 
         junction("body").append("<div class='prevall'></div>")
         junction(".prevall").append("<div class='prevallOne'></div>")
@@ -770,9 +893,12 @@ casper.test.begin "DOM Testing", 44, (test) ->
         junction(".prevall").append("<div class='prevallThree'></div>")
 
         thing = junction(".prevall div.prevallThree")
-        __utils__.echo thing.prevAll().length
 
-      test.assertEquals 1, 1, ["Prevall is not finished."]
+        return thing.prevAll().length
+
+      @.echo prevAllLength
+
+      test.assertEquals prevAllLength, 2, ["Prevall is successful."]
 
       return
 
@@ -900,6 +1026,26 @@ casper.test.begin "DOM Testing", 44, (test) ->
     # The REPLACEWITH function replaces each element in the current set with
     # the element or string specified.
 
+    # This function doesn't seem to be working. There should be a div with a
+    # class of "replacement" but it doesn't exist. Also, it looks like it got
+    # rid of the "replaceWith" div, but didn't add the "replacement" one back?
+
+    # From SHOESTRING:
+
+		# <div class="replace-with"></div>
+
+  	# test( '`.replaceWith()`', function() {
+  	# 	var $replaceWith = $fixture.find( ".replace-with" );
+    #
+  	# 	equal( $fixture.find( ".replace-with" ).length, 1 );
+    #
+  	# 	var old = $replaceWith.replaceWith( "<div class='replacement'></div>" );
+    #
+  	# 	equal( $fixture.find( ".replace-with" ).length, 0 );
+  	# 	equal( $fixture.find( ".replacement" ).length, 1 );
+  	# 	ok( old[0].className === "replace-with", "Returned element should be the original element copied" );
+  	# });
+
     .then ->
 
       before = @.evaluate ->
@@ -909,21 +1055,23 @@ casper.test.begin "DOM Testing", 44, (test) ->
 
       after = @.evaluate ->
 
-        junction(".replaceWith").replaceWith("<div class='replacement'></div>")
+        testThing = junction(".replaceWith")
+        testThing = testThing.replaceWith("<div class='replacement'></div>")
         return junction(".replacement")[0]
 
-      @.echo before
+      @.echo before.className
       @.echo after
 
-      test.assertEquals 1, 1, ["ReplaceWith is not finished."]
+      test.assertNotEquals after, null, ["The after object isn't null"]
 
       return
 
 
     # SERIALIZE ---------------------------------------------------------------
-    # SHOW --------------------------------------------------------------------
     # SIBLINGS ----------------------------------------------------------------
     # TEXT --------------------------------------------------------------------
+    # TOGGLECLASS -------------------------------------------------------------
+    # This is only in this library. Not in SHOESTRING.
     # VAL ---------------------------------------------------------------------
     # WIDTH -------------------------------------------------------------------
     # WRAPINNER ---------------------------------------------------------------
