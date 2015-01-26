@@ -25,7 +25,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals originalCount + testCount,
                         combinedThingCount,
-                        ["Add is successful"]
+                        ["ADD is successful"]
 
       return
 
@@ -40,7 +40,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction("#test").addClass("testing")
 
-      test.assertExists ".testing", ["AddClass is successful"]
+      test.assertExists ".testing", ["ADDCLASS is successful"]
 
       return
 
@@ -63,7 +63,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals testElement.attributes[0].textContent,
                         "foo-after",
-                        ["After is successful"]
+                        ["AFTER is successful"]
 
       return
 
@@ -98,7 +98,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction("body").append "<div id=\"second\"></div>"
 
-      test.assertExists "#second", ["Append is successful"]
+      test.assertExists "#second", ["APPEND is successful"]
 
       return
 
@@ -114,7 +114,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction("<div id='appendTo'></div>").appendTo("body")
 
-      test.assertExists "#appendTo", ["AppendTo is successful"]
+      test.assertExists "#appendTo", ["APPENDTO is successful"]
 
       return
 
@@ -131,21 +131,21 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction("#this_does_not_exist").attr("class")
 
-      test.assertEquals theThing, null, ["Attr returns null if the item doesn't exist"]
+      test.assertEquals theThing, null, ["ATTR returns null if the item doesn't exist"]
 
       # should get the attribute
       theThing = @.evaluate ->
 
         junction("#test").attr("class")
 
-      test.assertEquals theThing, "testing", ["Attr successfully get the attribute"]
+      test.assertEquals theThing, "testing", ["ATTR successfully get the attribute"]
 
       # should set the attribute
       theThing = @.evaluate ->
 
         junction("#test").attr("class", "foo").attr("class")
 
-      test.assertEquals theThing, "foo", ["Attr successfully sets an attribute"]
+      test.assertEquals theThing, "foo", ["ATTR successfully sets an attribute"]
 
       return
 
@@ -169,7 +169,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals testElement.attributes[0].textContent,
                         "foo-before2",
-                        ["Before is successful"]
+                        ["BEFORE is successful"]
 
       return
 
@@ -187,7 +187,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         element = junction("#el")
         return test.children().length
 
-      test.assertEquals numOfChildren, 1, ["Children is successful"]
+      test.assertEquals numOfChildren, 1, ["CHILDREN is successful"]
 
       return
 
@@ -215,8 +215,8 @@ casper.test.begin "DOM Testing", 53, (test) ->
         element = junction("#clone")
         return element.attr("class")
 
-      test.assertEquals clonedClass, "foo", ["Clone is successful"]
-      test.assertEquals originalClass, "clone", ["Clone doesn't modify original set"]
+      test.assertEquals clonedClass, "foo", ["CLONE is successful"]
+      test.assertEquals originalClass, "clone", ["CLONE doesn't modify original set"]
 
       return
 
@@ -238,7 +238,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("#closestChildOne").closest("#closest")
 
-      test.assertEquals closestDiv[0].id, "closest", ["Closest is successful"]
+      test.assertEquals closestDiv[0].id, "closest", ["CLOSEST is successful"]
 
       return
 
@@ -259,7 +259,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         test = junction("#css")
         return junction._getStyle(test[0], "margin-top")
 
-      test.assertEquals testThing, "2px", ["Css is successful"]
+      test.assertEquals testThing, "2px", ["CSS is successful"]
 
       return
 
@@ -286,9 +286,9 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("#eq").eq(100000)
 
-      test.assertEquals testThing2[0], testThing[0], ["Eq is successful"]
+      test.assertEquals testThing2[0], testThing[0], ["EQ is successful"]
 
-      test.assertEquals testThing3[0], undefined, ["Eq out of range is undefined"]
+      test.assertEquals testThing3[0], undefined, ["EQ out of range is undefined"]
 
       return
 
@@ -310,7 +310,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         test = junction("div")
         return test.filter("#filterChild").length
 
-      test.assertEquals numberOfDivs, 1, ["Filter is successful"]
+      test.assertEquals numberOfDivs, 1, ["FILTER is successful"]
 
       return
 
@@ -325,7 +325,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("body").find("#test").attr("class")
 
-      test.assertEquals testThing, "foo", ["Find is successful"]
+      test.assertEquals testThing, "foo", ["FIND is successful"]
 
       return
 
@@ -345,7 +345,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction(".first").first()[0]
 
-      test.assertEquals testThing.id, "firstOne", ["First is successful"]
+      test.assertEquals testThing.id, "firstOne", ["FIRST is successful"]
 
       return
 
@@ -364,7 +364,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("#test").get(0)
 
-      test.assertEquals getThing.id, testThing[0].id, ["Get is successful"]
+      test.assertEquals getThing.id, testThing[0].id, ["GET is successful"]
 
       return
 
@@ -380,7 +380,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("#test").hasClass("foo")
 
-      test.assertEquals hasFooClass, true, ["Hasclass is successful"]
+      test.assertEquals hasFooClass, true, ["HASCLASS is successful"]
 
       return
 
@@ -398,7 +398,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         junction("#height").height(300)
         return junction("#height").height()
 
-      test.assertEquals setHeight, 300, ["Height is successful"]
+      test.assertEquals setHeight, 300, ["HEIGHT is successful"]
 
       return
 
@@ -427,7 +427,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         htmlTwo = junction("#htmlChildTwo").html("<div id=\"htmlTest\"></div>")
         return htmlTwo.html()
 
-      test.assertEquals htmlTwo, htmlOne, ["Html is successful"]
+      test.assertEquals htmlTwo, htmlOne, ["HTML is successful"]
 
       return
 
@@ -470,7 +470,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
       @.echo testThing
 
       # test.assertEquals 1, 1, ["Index isn't finished yet."]
-      test.assertEquals testThing, 0, ["Index is successful."]
+      test.assertEquals testThing, 0, ["INDEX is successful."]
 
       return
 
@@ -495,7 +495,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals testElement.attributes[0].textContent,
                         "insertAfter2",
-                        ["InsertAfter is successful."]
+                        ["INSERTAFTER is successful."]
 
       return
 
@@ -520,7 +520,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals testElement.attributes[0].textContent,
                         "insertBefore2",
-                        ["InsertBefore is successful."]
+                        ["INSERTBEFORE is successful."]
 
       return
 
@@ -536,7 +536,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction("#test").is("#test")
 
-      test.assertEquals testThing, true, ["Is is success."]
+      test.assertEquals testThing, true, ["IS is success."]
 
       return
 
@@ -556,7 +556,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction(".last").last()[0]
 
-      test.assertEquals testThing.id, "lastTwo", ["Last is successful"]
+      test.assertEquals testThing.id, "lastTwo", ["LAST is successful"]
 
       return
 
@@ -608,7 +608,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       @.echo nextLength
 
-      test.assertEquals nextLength, 2, ["Next is successful."]
+      test.assertEquals nextLength, 2, ["NEXT is successful."]
 
       return
 
@@ -629,7 +629,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         thing = junction(".not > div")
         return thing.not(".is-not").length
 
-      test.assertEquals isSoCount, 1, ["Not is successful."]
+      test.assertEquals isSoCount, 1, ["NOT is successful."]
 
       return
 
@@ -643,7 +643,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
     .then ->
 
-      test.assertEquals 1, 1, ["Offset is not finished."]
+      test.assertEquals 1, 1, ["OFFSET is not finished."]
 
       return
 
@@ -672,7 +672,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertEquals childOneParent.attributes[0].textContent,
                         parent.attributes[0].textContent,
-                        ["Parent is successful."]
+                        ["PARENT is successful."]
 
       return
 
@@ -717,8 +717,8 @@ casper.test.begin "DOM Testing", 53, (test) ->
         indexThing = junction(".parents").find(".child").parents()[1]
         return indexThing.attributes[0].textContent
 
-      test.assertEquals index0, "parentOne", ["Parents returns correct parent at index 0."]
-      test.assertEquals index1, "parents", ["Parents returns correct parent at index 1"]
+      test.assertEquals index0, "parentOne", ["PARENTS returns correct parent at index 0."]
+      test.assertEquals index1, "parents", ["PARENTS returns correct parent at index 1"]
 
       return
 
@@ -763,7 +763,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         junction(".prepend").prepend("<div class='.firstPrependedThing'></div>")
 
       # test.assertEquals 1, 1, ["Prepend is not finished."]
-      test.assertExists ".firstPrependedThing", ["Prepend is successful"]
+      test.assertExists ".firstPrependedThing", ["PREPEND is successful"]
 
       return
 
@@ -795,7 +795,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction("<div class='prependTo'></div>").prependTo("body")
 
-      test.assertExists ".prependTo", ["PrependTo is successful."]
+      test.assertExists ".prependTo", ["PREPENDTO is successful."]
 
       return
 
@@ -848,7 +848,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       @.echo prevLength
 
-      test.assertEquals prevLength, 1, ["Prev is successful."]
+      test.assertEquals prevLength, 1, ["PREV is successful."]
 
       return
 
@@ -898,7 +898,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       @.echo prevAllLength
 
-      test.assertEquals prevAllLength, 2, ["Prevall is successful."]
+      test.assertEquals prevAllLength, 2, ["PREVALL is successful."]
 
       return
 
@@ -917,7 +917,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction(".prop").prop("class")
 
-      test.assertEquals property, "prop", ["Prop gets the property correctly"]
+      test.assertEquals property, "prop", ["PROP gets the property correctly"]
 
       property = @.evaluate ->
 
@@ -925,7 +925,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction(".bar").prop("class")
 
-      test.assertEquals property, "bar", ["Prop sets the property correctly."]
+      test.assertEquals property, "bar", ["PROP sets the property correctly."]
 
       return
 
@@ -946,7 +946,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         junction(".remove").remove()
 
-      test.assertDoesntExist ".remove", ["Remove is successful."]
+      test.assertDoesntExist ".remove", ["REMOVE is successful."]
 
       return
 
@@ -970,7 +970,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertNotEquals after.attributes[1],
                           before.attributes[1],
-                          ["RemoveAttr removed the attribute"]
+                          ["REMOVEATTR removed the attribute"]
 
       return
 
@@ -994,7 +994,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       test.assertNotEquals after.className,
                           before.className,
-                          ["RemoveClass removed the class."]
+                          ["REMOVECLASS removed the class."]
 
       return
 
@@ -1016,7 +1016,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         junction(".removeProp").removeProp("class")
         return junction(".removeProp")
 
-      test.assertNotEquals after, before, ["RemoveProp removed the property."]
+      test.assertNotEquals after, before, ["REMOVEPROP removed the property."]
 
       return
 
@@ -1062,7 +1062,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
       @.echo before.className
       @.echo after
 
-      test.assertNotEquals after, null, ["ReplaceWith: The after object isn't null"]
+      test.assertNotEquals after, null, ["REPLACEWITH: The after object isn't null"]
 
       # TODO: When this test passes, write a test to check the before and after.
 
@@ -1094,7 +1094,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return otherThing
 
-      test.assertEquals data["color"], "color", ["Serialize is successful."]
+      test.assertEquals data["color"], "color", ["SERIALIZE is successful."]
 
       return
 
@@ -1115,7 +1115,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
         return junction(".siblingTwo").siblings().length
 
-      test.assertEquals siblingCount, 2, ["Siblings is successful."]
+      test.assertEquals siblingCount, 2, ["SIBLINGS is successful."]
 
       return
 
@@ -1134,7 +1134,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
 
       testText = "Some Test Text"
 
-      test.assertEquals containerText, testText, ["Text is successful."]
+      test.assertEquals containerText, testText, ["TEXT is successful."]
 
       return
 
@@ -1158,14 +1158,14 @@ casper.test.begin "DOM Testing", 53, (test) ->
         junction(".toggleClass").toggleClass("someClass")
         return junction(".toggleClass").prop("class")
 
-      test.assertNotEquals before, after, ["ToggleClass removed the class."]
+      test.assertNotEquals before, after, ["TOGGLECLASS removed the class."]
 
       addClassBack = @.evaluate ->
 
         junction(".toggleClass").toggleClass("someClass")
         return junction(".toggleClass").prop("class")
 
-      test.assertNotEquals after, addClassBack, ["ToggleClass added the class"]
+      test.assertNotEquals after, addClassBack, ["TOGGLECLASS added the class"]
 
       return
 
@@ -1184,7 +1184,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         valItem = junction(".val")
         return valItem.val()
 
-      test.assertEquals itemValue, "blue", ["Val gets a value correctly."]
+      test.assertEquals itemValue, "blue", ["VAL gets a value correctly."]
 
       # Check to see that the function sets the value on the elements.
       itemSetValue = @.evaluate ->
@@ -1193,7 +1193,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         valItem.val("orange")
         return valItem.val()
 
-      test.assertEquals itemSetValue, "orange", ["Val sets a value correctly."]
+      test.assertEquals itemSetValue, "orange", ["VAL sets a value correctly."]
 
       return
 
@@ -1212,7 +1212,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         widthItem.width("400px")
         return widthItem.width()
 
-      test.assertEquals widthValue, 400, ["Width is successful."]
+      test.assertEquals widthValue, 400, ["WIDTH is successful."]
 
       return
 
@@ -1233,7 +1233,7 @@ casper.test.begin "DOM Testing", 53, (test) ->
         wrapInnerItem = junction(".wrapinner")
         wrapInnerItem.wrapInner("<div class='wrapper'></div>")
 
-      test.assertExists ".wrapper", ["WrapInner is successful."]
+      test.assertExists ".wrapper", ["WRAPINNER is successful."]
 
       return
 
