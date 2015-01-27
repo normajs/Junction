@@ -1,5 +1,5 @@
 
-casper.test.begin "Utility Methods Testing", 1, (test) ->
+casper.test.begin "Utility Methods Testing", 4, (test) ->
 
 	casper.start()
 
@@ -11,8 +11,66 @@ casper.test.begin "Utility Methods Testing", 1, (test) ->
 
 		# DEBOUNCE ------------------------------------------------------------------
 		# FLATTEN -------------------------------------------------------------------
+
+		# The FLATTEN function takes any array and returns a new array with all the
+		# elements flattened into one dimension.
+
+		.then ->
+
+			testArray = @.evaluate ->
+
+				junction("body").append("<div id='flattenTest'></div>")
+				junction("#flattenTest").append("<div id='flattenChild1'></div>")
+				junction("#flattenTest").append("<div id='flattenChild2'></div>")
+
+				testThing = junction("#flattenTest").children()
+				arr = junction.flatten(testThing)
+				return arr
+
+			test.assertEquals testArray.length, 2, ["FLATTEN is successful."]
+
+			return
+
+
 		# FLATTENOBJECT -------------------------------------------------------------
+
+		# The FLATTENOBJECT function works the same as FLATTEN except it accepts
+		# and object and turns it into a flattened array.
+
+		.then ->
+
+			testArray = @.evaluate ->
+
+				junction("body").append("<div id='flattenObjectTest'></div>")
+				junction("#flattenObjectTest").append("<div id='flattenChild1'></div>")
+				junction("#flattenObjectTest").append("<div id='flattenChild2'></div>")
+
+				testObject = []
+				testThing = junction("#flattenObjectTest").children()
+				testThing.each ->
+					element = {}
+					element.id = @.id
+					testObject.push element
+
+				arr = junction.flattenObject(testObject)
+				return arr
+
+			test.assertEquals testArray.length, 2, ["FLATTENOBJECT is successful."]
+
+			return
+
+
 		# GETKEYS -------------------------------------------------------------------
+
+		# The GETKEYS function returns an array of keys that match a certain value.
+
+		.then ->
+
+			test.assertEquals 1, 1, ["Working on GETKEYS."]
+
+			return
+
+
 		# GETQUERYVARIABLE ----------------------------------------------------------
 		# ISELEMENT -----------------------------------------------------------------
 		# ISELEMENTINVIEW -----------------------------------------------------------
