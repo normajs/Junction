@@ -8,14 +8,19 @@ casper.test.begin "Utility Methods Testing", 5, (test) ->
 
 		# The FLATTEN function takes any array and returns a new array with all the
 		# elements flattened into one dimension.
-		
+
 		###
 			@Rich
-			
+
 			These test don't always need to use DOM elements. Many of them interact
 			with native arrays or objects
 		###
-		
+		###
+			@James
+
+			Now you tell me. ;)
+		###
+
 		.then ->
 
 			testArray = @.evaluate ->
