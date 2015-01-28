@@ -1,13 +1,7 @@
 
-casper.test.begin "Utility Methods Testing", 4, (test) ->
+casper.test.begin "Utility Methods Testing", 5, (test) ->
 
 	casper.start()
-
-		.then ->
-
-			test.assertEquals 1, 1, ["Write some UTILITIES tests"]
-
-			return
 
 		# DEBOUNCE ------------------------------------------------------------------
 		# FLATTEN -------------------------------------------------------------------
@@ -66,13 +60,71 @@ casper.test.begin "Utility Methods Testing", 4, (test) ->
 
 		.then ->
 
-			test.assertEquals 1, 1, ["Working on GETKEYS."]
+			testArray = @.evaluate ->
+
+				junction("body").append("<div id='getKeysTest'></div>")
+				junction("#getKeysTest").append("<div id='getKeysChild1'></div>")
+				junction("#getKeysTest").append("<div id='getKeysChild2'></div>")
+
+				testObject = []
+				testThing = junction("#getKeysTest").children()
+				testThing.each ->
+					element = {}
+					element.id = @.id
+					element.zanzabar = "zulu"
+					testObject.push element
+
+				arr = junction.getKeys testObject, "zulu"
+				# arr = junction.getKeys testObject[0], "zulu" # <--- THIS WORKS
+				return arr
+
+			@.echo testArray
+			@.echo "This doesn't work if I just pass the testObject object to the"
+			@.echo "getKeys function. It DOES work if I pass just one specific item"
+			@.echo "testObject doesn't work. testObject[0] does."
+			@.echo "I would think I would be able to pass the whole object."
+			test.assertEquals testArray[0], "zanzabar", ["GETKEYS is successful."]
 
 			return
 
 
 		# GETQUERYVARIABLE ----------------------------------------------------------
+
+		# The GETQUERYVARIABLE function returns an array of query variables in the
+		# URL string matching the value.
+
+		.thenOpen 'http://localhost:3000?testing=all&thething=all&theotherthing=three', () ->
+
+			@.echo "where the heck am i?"
+
+			testThing = @.evaluate ->
+
+				return junction.getQueryVariable "all"
+
+			@.echo testThing
+			@.echo "testThing is returning null. I think the problem is somewhere in"
+			@.echo "setting the results in the function. Maybe. "
+
+			test.assertEquals testThing[0], "testing", ["GETQUERYVARIABLE is successful."]
+
+			return
+
+
 		# ISELEMENT -----------------------------------------------------------------
+
+		# The ISELEMENT function determines if the
+
+		.then ->
+
+			@.evaluate ->
+
+				__utils__.echo window.location
+
+			test.assertEquals 1, 1, ["Working on ISELEMENT."]
+
+			return
+
+
 		# ISELEMENTINVIEW -----------------------------------------------------------
 		# ISMOBILE ------------------------------------------------------------------
 		# LAST ----------------------------------------------------------------------
