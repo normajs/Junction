@@ -10,7 +10,7 @@
     },
     "browser-sync": {
       "root": "./",
-      "watch": "test/**"
+      "watch": "tests/**"
     },
     "copy": {
       "src": "out/junction",
