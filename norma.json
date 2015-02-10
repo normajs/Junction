@@ -6,7 +6,7 @@
       "dest": "out"
     },
     "casperjs": {
-      "src": "test/lib/**/*"
+      "src": "tests/unit/**/*"
     },
     "browser-sync": {
       "root": "./",
@@ -21,7 +21,7 @@
     }
   },
   "server": {
-    "host": "test",
+    "host": "tests",
     "port": "3000"
   }
 }
