@@ -1,9 +1,17 @@
 
 describe 'DOM tests', ->
-  
+
   before ->
     # casper.start 'http://localhost:3000'
     # casper.start
+    return
+
+  it 'should have junction in the title', ->
+    casper.then ->
+      @.echo casper.getTitle()
+      @.echo casper.getHTML()
+      @.echo casper.getCurrentUrl()
+      expect(/Junction/).to.matchTitle
     return
 
   # ADD ---------------------------------------------------------------------
@@ -20,6 +28,12 @@ describe 'DOM tests', ->
         __utils__.echo bodyThing.length
         thing = junction("#test")
         __utils__.echo thing.length
+      bodyLength = @.evaluate ->
+        return junction("body").length
+      testLength = @.evaluate ->
+        return junction("#test").length
+      @.echo bodyLength
+      @.echo testLength
       "#test".should.be.inDOM
     return
 
