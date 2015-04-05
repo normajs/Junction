@@ -8,11 +8,12 @@ describe 'DOM tests', ->
 
   it 'should have junction in the title', ->
     casper.then ->
-      @.echo casper.getTitle()
-      @.echo casper.getHTML()
-      @.echo casper.getCurrentUrl()
       expect(/Junction/).to.matchTitle
     return
+
+  it 'matches the title pulled from casper', ->
+    casper.then ->
+      expect(casper.getTitle()).to.matchTitle
 
   # ADD ---------------------------------------------------------------------
 
@@ -22,19 +23,17 @@ describe 'DOM tests', ->
 
   it 'ADD method should work', ->
     casper.then ->
-      @.evaluate ->
-        junction("body").add("#test")
-        bodyThing = junction("body")
-        __utils__.echo bodyThing.length
-        thing = junction("#test")
-        __utils__.echo thing.length
       bodyLength = @.evaluate ->
         return junction("body").length
       testLength = @.evaluate ->
         return junction("#test").length
+      combinedLength = @.evaluate ->
+        return junction("body").add("#test").length
       @.echo bodyLength
       @.echo testLength
-      "#test".should.be.inDOM
+      @.echo combinedLength
+      firstTwo = bodyLength + testLength
+      firstTwo.should.equal(combinedLength)
     return
 
   return

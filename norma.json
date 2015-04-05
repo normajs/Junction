@@ -9,7 +9,11 @@
       "src": "tests/**/*"
     },
     "browser-sync": {
-      "root": "./",
+      "server": {
+        "baseDir": "./workbench"
+      },
+      "tunnel": false,
+      "files": ["./workbench/**/*"],
       "watch": "tests/**"
     },
     "copy": {
