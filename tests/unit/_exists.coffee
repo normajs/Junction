@@ -1,34 +1,23 @@
 
+describe 'Junction existence tests', ->
+  
+  before ->
+    casper.start 'http://localhost:3000'
+    return
 
-casper.test.begin "Junction is present", 2, (test) ->
-
-
-  casper.start()
-
-    # Library is present
-    .then ->
-
+  it 'junction library should be present', ->
+    casper.then ->
       @.page.injectJs("./out/junction.js")
-
-      test.assertEvalEquals (->
+      junctionType = @.evaluate ->
         return typeof junction
-      ), "function", "Junction is present"
+      junctionType.should.equal("function")
+    return
 
-
-    # Library has methods
-    .then ->
-
-      test.assertEvalEquals (->
-        return Object.keys(junction).length > 0
-      ), true, "Junction has methods"
-
-      return
-
-
-
-
-  casper.run ->
-    test.done()
+  it 'junction library should have methods', ->
+    casper.then ->
+      numberOfMethods = @.evaluate ->
+        return Object.keys(junction).length
+      numberOfMethods.should.be.at.least(1)
     return
 
   return

@@ -5,8 +5,8 @@
       "src": "lib/**/*",
       "dest": "out"
     },
-    "casperjs": {
-      "src": "tests/unit/**/*"
+    "mocha-casperjs": {
+      "src": "tests/**/*"
     },
     "browser-sync": {
       "root": "./",
