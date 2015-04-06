@@ -51,7 +51,6 @@ junction = (selector, context) ->
       if match = rquickExpr.exec( selector )
 
         if (m = match[1])
-
           elements = [ document.getElementById m ]
 
         else if ( match[2] )

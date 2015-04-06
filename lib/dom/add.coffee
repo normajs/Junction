@@ -17,9 +17,10 @@ junction.fn.add = (selector) ->
     ret.push this
     return
 
-  junction(selector).each ->
-    ret.push this
-    return
+  if junction(selector)[0]
+    junction(selector).each ->
+      ret.push this
+      return
 
 
-  junction ret
+  return junction ret

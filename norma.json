@@ -22,10 +22,11 @@
       "ext": [
         "js"
       ]
+    },
+    "browser-sync copy": {
+      "@extend": "copy",
+      "dest": "workbench"
     }
   },
-  "server": {
-    "host": "tests",
-    "port": "3000"
-  }
+  "test": "mocha-casperjs"
 }

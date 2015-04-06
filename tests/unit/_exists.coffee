@@ -2,18 +2,7 @@
 describe 'Junction existence tests', ->
 
   before ->
-    casper.start 'http://localhost:3000'
-    return
-
-  it 'should be pointed at http://localhost:3000', ->
-    casper.then ->
-      expect(/localhost:3000/).to.matchCurrentUrl
-    return
-
-  it 'matches the current url given by casper', ->
-    casper.then ->
-      expect(casper.getCurrentUrl()).to.matchCurrentUrl
-    return
+    casper.start()
 
   it 'junction library should be present', ->
     casper.then ->

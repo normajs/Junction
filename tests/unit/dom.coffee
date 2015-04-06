@@ -1,20 +1,6 @@
 
 describe 'DOM tests', ->
 
-  before ->
-    # casper.start 'http://localhost:3000'
-    # casper.start
-    return
-
-  it 'should have junction in the title', ->
-    casper.then ->
-      expect(/Junction/).to.matchTitle
-    return
-
-  it 'matches the title pulled from casper', ->
-    casper.then ->
-      expect(casper.getTitle()).to.matchTitle
-
   # ADD ---------------------------------------------------------------------
 
   # The ADD function adds the item to the current set of items that can have
@@ -25,13 +11,16 @@ describe 'DOM tests', ->
     casper.then ->
       bodyLength = @.evaluate ->
         return junction("body").length
+
       testLength = @.evaluate ->
+        el = document.createElement("DIV");
+        el.id = "test"
+        document.body.appendChild(el);
         return junction("#test").length
+
       combinedLength = @.evaluate ->
         return junction("body").add("#test").length
-      @.echo bodyLength
-      @.echo testLength
-      @.echo combinedLength
+
       firstTwo = bodyLength + testLength
       firstTwo.should.equal(combinedLength)
     return

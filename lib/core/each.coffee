@@ -15,8 +15,8 @@ junction.fn.each = (callback) ->
 
 junction.each = (collection, callback) ->
 
-  for item in collection
-    val = callback.call item, _i, item
+  for item, index in collection
+    val = callback.call item, index, item
 
     if val is false
       break
