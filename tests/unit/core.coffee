@@ -1,11 +1,6 @@
 
 describe 'Core method tests', ->
 
-  before ->
-    # casper.start 'http://localhost:3000'
-    # casper.start
-    return
-
   it 'junction library should be ready', ->
     casper.then ->
       junctionIsReady = @.evaluate ->
