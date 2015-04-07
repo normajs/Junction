@@ -737,484 +737,467 @@ describe 'DOM tests', ->
 
     return
 
-  return
+  # PREPENDTO ---------------------------------------------------------------
 
-#
-#       return
-#
-#
-#     # PREPENDTO ---------------------------------------------------------------
-#
-#     # The PREPENDTO function adds each element of the current set BEFORE the
-#     # children of the selected elements.
-#
-#     # NOTE: I just going to guess that this function doesn't work yet. The
-#     # Shoestring docs show the test for it using AppendTo. That tells me it
-#     # doesn't work yet. Will try to clarify and then revisit.
-#
-#     # From SHOESTRING:
-#
-#   	# test( '`.prependTo() adds the all elements to the selected element` ', function() {
-#   	# 	var tmp, $prepend = $fixture.find( ".prepend" );
-#     #
-#   	# 	tmp = $(	"<div class='first'></div>" );
-#     #
-#   	# 	tmp.appendTo( "#qunit-fixture > .prepend" );
-#     #
-#   	# 	equal( $prepend.find( ".first" )[0], tmp[0] );
-#   	# });
-#
-#     .then ->
-#
-#       @.evaluate ->
-#
-#         junction("<div class='prependTo'></div>").prependTo("body")
-#
-#       test.assertExists ".prependTo", ["PREPENDTO is successful."]
-#
-#       return
-#
-#
-#     # PREV --------------------------------------------------------------------
-#
-#     # The PREV function returns an object containing one sibling before each
-#     # element in the original set.
-#
-#     # It doesn't seem like this is working either. According to the Shoestring
-#     # tests thing.prev().length here should return 1.
-#
-#     # From SHOESTRING:
-#
-# 		# <div class="prev">
-# 		# 	<div class="first"></div>
-# 		# 	<div class="second"></div>
-# 		# 	<div class="third"></div>
-# 		# </div>
-#
-#   	# test( '`.prev()`', function() {
-#   	# 	var $last, $all;
-#     #
-#   	# 	$last = $fixture.find( ".prev div.third" );
-#   	# 	$all = $fixture.find( ".prev > div" );
-#     #
-#   	# 	equal( $last.prev().length, 1 ); <--- I'M TESTING THIS
-#   	# 	equal( $last.prev()[0], $fixture.find(".prev .second")[0]);
-#     #
-#   	# 	// ordering correct according to jquery api
-#   	# 	// http://api.jquery.com/prev/
-#   	# 	equal( $all.prev().length, 2 );
-#   	# 	equal( $all.prev()[0], $fixture.find(".prev .first")[0]);
-#   	# 	equal( $all.prev()[1], $fixture.find(".prev .second")[0]);
-#   	# 	equal( $all.prev()[2], undefined );
-#   	# });
-#
-#     .then ->
-#
-#       prevLength = @.evaluate ->
-#
-#         junction("body").append("<div class='prev'></div>")
-#         junction(".prev").append("<div class='prevOne'></div>")
-#         junction(".prev").append("<div class='prevTwo'></div>")
-#         junction(".prev").append("<div class='prevThree'></div>")
-#
-#         thing = junction(".prev div.prevThree")
-#
-#         return thing.prev().length
-#
-#       @.echo prevLength
-#
-#       test.assertEquals prevLength, 1, ["PREV is successful."]
-#
-#       return
-#
-#
-#     # PREVALL -----------------------------------------------------------------
-#
-#     # The PREVALL function returns an object with the set of ALL siblings before
-#     # each element in the original set.
-#
-#     # This doesn't look like it's working. According to the Shoestring tests
-#     # thing.prevAll().length should be returning 2.
-#
-#     # From SHOESTRING:
-#
-# 		# <div class="prevall">
-# 		# 	<div class="first"></div>
-# 		# 	<div class="second"></div>
-# 		# 	<div class="third"></div>
-# 		# </div>
-#
-#   	# test( '`.prevAll()`', function() {
-#   	# 	var $last;
-#     #
-#   	# 	$last = $fixture.find( ".prevall div.third" );
-#     #
-#   	# 	equal( $last.prevAll().length, 2 ); <--- I"M TESTING THIS
-#     #
-#   	# 	// ordering correct according to jquery api
-#   	# 	// http://api.jquery.com/prevall/
-#   	# 	equal( $last.prevAll()[0], $fixture.find(".prevall .second")[0]);
-#   	# 	equal( $last.prevAll()[1], $fixture.find(".prevall .first")[0]);
-#   	# 	equal( $last.prevAll()[2], undefined );
-#   	# });
-#
-#     .then ->
-#
-#       prevAllLength = @.evaluate ->
-#
-#         junction("body").append("<div class='prevall'></div>")
-#         junction(".prevall").append("<div class='prevallOne'></div>")
-#         junction(".prevall").append("<div class='prevallTwo'></div>")
-#         junction(".prevall").append("<div class='prevallThree'></div>")
-#
-#         thing = junction(".prevall div.prevallThree")
-#
-#         return thing.prevAll().length
-#
-#       @.echo prevAllLength
-#
-#       test.assertEquals prevAllLength, 2, ["PREVALL is successful."]
-#
-#       return
-#
-#
-#     # PROP --------------------------------------------------------------------
-#
-#     # The PROP function gets the property value on the first element or sets
-#     # the property value on all the elements in the set.
-#
-#     .then ->
-#
-#       # gets the property
-#       property = @.evaluate ->
-#
-#         junction("body").append("<div class='prop'></div>")
-#
-#         return junction(".prop").prop("class")
-#
-#       test.assertEquals property, "prop", ["PROP gets the property correctly"]
-#
-#       property = @.evaluate ->
-#
-#         junction(".prop").prop("class", "bar")
-#
-#         return junction(".bar").prop("class")
-#
-#       test.assertEquals property, "bar", ["PROP sets the property correctly."]
-#
-#       return
-#
-#
-#     # PROPFIX -----------------------------------------------------------------
-#
-#     # SHOESTRING does not have a test for this.
-#
-#     # REMOVE ------------------------------------------------------------------
-#
-#     # The REMOVE function removes the current set of elements from the DOM.
-#
-#     .then ->
-#
-#       @.evaluate ->
-#
-#         junction("body").append("<div class='remove'></div>")
-#
-#         junction(".remove").remove()
-#
-#       test.assertDoesntExist ".remove", ["REMOVE is successful."]
-#
-#       return
-#
-#
-#     # REMOVEATTR --------------------------------------------------------------
-#
-#     # The REMOVEATTR function removes an attribute from each element in the
-#     # current set
-#
-#     .then ->
-#
-#       before = @.evaluate ->
-#
-#         junction("body").append("<div class='removeattr' data-foo='bar'></div>")
-#         return junction(".removeattr")[0]
-#
-#       after = @.evaluate ->
-#
-#         junction(".removeattr").removeAttr("data-foo")
-#         return junction(".removeattr")[0]
-#
-#       test.assertNotEquals after.attributes[1],
-#                           before.attributes[1],
-#                           ["REMOVEATTR removed the attribute"]
-#
-#       return
-#
-#
-#     # REMOVECLASS -------------------------------------------------------------
-#
-#     # The REMOVECLASS function removes the class from the DOM for each element
-#     # in the set.
-#
-#     .then ->
-#
-#       before = @.evaluate ->
-#
-#         junction("body").append("<div class='removeClass foo'></div>")
-#         return junction(".removeClass")[0]
-#
-#       after = @.evaluate ->
-#
-#         junction(".removeClass").removeClass("foo")
-#         return junction(".removeClass")[0]
-#
-#       test.assertNotEquals after.className,
-#                           before.className,
-#                           ["REMOVECLASS removed the class."]
-#
-#       return
-#
-#
-#     # REMOVEPROP --------------------------------------------------------------
-#
-#     # The REMOVEPROP function removes a property from each element of the
-#     # current set.
-#
-#     .then ->
-#
-#       before = @.evaluate ->
-#
-#         junction("body").append("<div class='removeProp'></div>")
-#         return junction(".removeProp")
-#
-#       after = @.evaluate ->
-#
-#         junction(".removeProp").removeProp("class")
-#         return junction(".removeProp")
-#
-#       test.assertNotEquals after, before, ["REMOVEPROP removed the property."]
-#
-#       return
-#
-#
-#     # REPLACEWITH -------------------------------------------------------------
-#
-#     # The REPLACEWITH function replaces each element in the current set with
-#     # the element or string specified.
-#
-#     # This function doesn't seem to be working. There should be a div with a
-#     # class of "replacement" but it doesn't exist. Also, it looks like it got
-#     # rid of the "replaceWith" div, but didn't add the "replacement" one back?
-#
-#     # From SHOESTRING:
-#
-# 		# <div class="replace-with"></div>
-#
-#   	# test( '`.replaceWith()`', function() {
-#   	# 	var $replaceWith = $fixture.find( ".replace-with" );
-#     #
-#   	# 	equal( $fixture.find( ".replace-with" ).length, 1 );
-#     #
-#   	# 	var old = $replaceWith.replaceWith( "<div class='replacement'></div>" );
-#     #
-#   	# 	equal( $fixture.find( ".replace-with" ).length, 0 );
-#   	# 	equal( $fixture.find( ".replacement" ).length, 1 );
-#   	# 	ok( old[0].className === "replace-with", "Returned element should be the original element copied" );
-#   	# });
-#
-#     .then ->
-#
-#       before = @.evaluate ->
-#
-#         junction("body").append("<div class='replaceWith'></div>")
-#         return junction(".replaceWith")[0]
-#
-#       after = @.evaluate ->
-#
-#         testThing = junction(".replaceWith")
-#         testThing = testThing.replaceWith("<div class='replacement'></div>")
-#         return junction(".replacement")[0]
-#
-#       @.echo before.className
-#       @.echo after
-#
-#       test.assertNotEquals after, null, ["REPLACEWITH: The after object isn't null"]
-#
-#       # TODO: When this test passes, write a test to check the before and after.
-#
-#       return
-#
-#
-#     # SERIALIZE ---------------------------------------------------------------
-#
-#     # The SERIALIZE function serializes child input element values into
-#     # an object
-#
-#     .then ->
-#
-#       data = @.evaluate ->
-#
-#         junction("body").append("<div class='serialize'></div>")
-#
-#         testThing = junction(".serialize")
-#
-#         i = 0
-#
-#         while i < junction.inputTypes.length
-#           type = junction.inputTypes[i]
-#           input = "<input type='" + type + "'" + " name='" + type + "'" + " value='" + type + "'></input>"
-#           testThing.append input
-#           i++
-#
-#         otherThing = testThing.serialize()
-#
-#         return otherThing
-#
-#       test.assertEquals data["color"], "color", ["SERIALIZE is successful."]
-#
-#       return
-#
-#
-#     # SIBLINGS ----------------------------------------------------------------
-#
-#     # The SIBLINGS function gets all of the sibling elements for each element
-#     # in the current set.
-#
-#     .then ->
-#
-#       siblingCount = @.evaluate ->
-#
-#         junction("body").append("<div class='siblings'></div>")
-#         junction(".siblings").append("<div class='siblingOne'></div>")
-#         junction(".siblings").append("<div class='siblingTwo'></div>")
-#         junction(".siblings").append("<div class='siblingThree'></div>")
-#
-#         return junction(".siblingTwo").siblings().length
-#
-#       test.assertEquals siblingCount, 2, ["SIBLINGS is successful."]
-#
-#       return
-#
-#
-#     # TEXT --------------------------------------------------------------------
-#
-#     # The TEXT function recursively retrieves the text content of each element
-#     # in the current set.
-#
-#     .then ->
-#
-#       containerText = @.evaluate ->
-#
-#         junction("body").append("<div class='text'>Some Test Text</div>")
-#         return junction(".text").text()
-#
-#       testText = "Some Test Text"
-#
-#       test.assertEquals containerText, testText, ["TEXT is successful."]
-#
-#       return
-#
-#
-#     # TOGGLECLASS -------------------------------------------------------------
-#
-#     # The TOGGLECLASS function should add a class to the selected element if
-#     # it isn't found or remove the class if it is found.
-#
-#     # Note: This is only in this library. Not in SHOESTRING.
-#
-#     .then ->
-#
-#       before = @.evaluate ->
-#
-#         junction("body").append("<div class='toggleClass someClass'></div>")
-#         return junction(".toggleClass").prop("class")
-#
-#       after = @.evaluate ->
-#
-#         junction(".toggleClass").toggleClass("someClass")
-#         return junction(".toggleClass").prop("class")
-#
-#       test.assertNotEquals before, after, ["TOGGLECLASS removed the class."]
-#
-#       addClassBack = @.evaluate ->
-#
-#         junction(".toggleClass").toggleClass("someClass")
-#         return junction(".toggleClass").prop("class")
-#
-#       test.assertNotEquals after, addClassBack, ["TOGGLECLASS added the class"]
-#
-#       return
-#
-#
-#     # VAL ---------------------------------------------------------------------
-#
-#     # The VAL function gets the value of the first element or sets the value
-#     # of all the elements in the current set.
-#
-#     .then ->
-#
-#       # Check to see that the function gets the value of the first element
-#       itemValue = @.evaluate ->
-#
-#         junction("body").append("<input type='color' name='color' value='blue' class='val'></input>")
-#         valItem = junction(".val")
-#         return valItem.val()
-#
-#       test.assertEquals itemValue, "blue", ["VAL gets a value correctly."]
-#
-#       # Check to see that the function sets the value on the elements.
-#       itemSetValue = @.evaluate ->
-#
-#         valItem = junction(".val")
-#         valItem.val("orange")
-#         return valItem.val()
-#
-#       test.assertEquals itemSetValue, "orange", ["VAL sets a value correctly."]
-#
-#       return
-#
-#
-#     # WIDTH -------------------------------------------------------------------
-#
-#     # The WIDTH function gets the width value of the first element or sets the
-#     # width for all the elements in the current set.
-#
-#     .then ->
-#
-#       widthValue = @.evaluate ->
-#
-#         junction("body").append("<div class='width'></div>")
-#         widthItem = junction(".width")
-#         widthItem.width("400px")
-#         return widthItem.width()
-#
-#       test.assertEquals widthValue, 400, ["WIDTH is successful."]
-#
-#       return
-#
-#
-#     # WRAPINNER ---------------------------------------------------------------
-#
-#     # The WRAPINNER function wraps the child elements in the provided HTML
-#
-#     # TODO: Write a test to check if the function actually wrapped .inner
-#     # with .wrapper
-#
-#     .then ->
-#
-#       @.evaluate ->
-#
-#         junction("body").append("<div class='wrapinner'></div>")
-#         junction(".wrapinner").append("<div class='inner'></div>")
-#         wrapInnerItem = junction(".wrapinner")
-#         wrapInnerItem.wrapInner("<div class='wrapper'></div>")
-#
-#       test.assertExists ".wrapper", ["WRAPINNER is successful."]
-#
-#       return
-#
-#
-#   casper.run ->
-#     test.done()
-#     return
-#
-#   return
+  # The PREPENDTO function adds each element of the current set BEFORE the
+  # children of the selected elements.
+
+  it 'PREPENDTO method should work', ->
+
+    casper.then ->
+
+      @.evaluate ->
+        junction("body").append("<div id='prependTo-test'></div>")
+        junction("#prependTo-test").append("<div id='prependTo-test-one'></div>")
+        junction("<div id='prependTo-test-two'></div>").prependTo("#prependTo-test")
+
+      testThing = @.evaluate ->
+        te = document.getElementById("prependTo-test")
+        temp = te.firstChild
+        return temp
+
+      @.echo testThing.attributes[0].textContent
+
+      testThing.attributes[0].textContent.should.equal("prependTo-test-two")
+
+    return
+
+  # PREV --------------------------------------------------------------------
+
+  # The PREV function returns an object containing one sibling before each
+  # element in the original set.
+
+  it 'PREV method should work', ->
+
+    casper.then ->
+
+      prevLength = @.evaluate ->
+
+        junction("body").append("<div class='prev'></div>")
+        junction(".prev").append("<div class='prevOne'></div>")
+        junction(".prev").append("<div class='prevTwo'></div>")
+        junction(".prev").append("<div class='prevThree'></div>")
+
+        thing = junction(".prev div.prevThree")
+
+        return thing.prev().length
+
+      @.echo prevLength
+
+      prevLength.should.equal(1)
+
+      # It doesn't seem like this is working either. According to the Shoestring
+      # tests thing.prev().length here should return 1.
+
+      # From SHOESTRING:
+
+  		# <div class="prev">
+  		# 	<div class="first"></div>
+  		# 	<div class="second"></div>
+  		# 	<div class="third"></div>
+  		# </div>
+
+    	# test( '`.prev()`', function() {
+    	# 	var $last, $all;
+      #
+    	# 	$last = $fixture.find( ".prev div.third" );
+    	# 	$all = $fixture.find( ".prev > div" );
+      #
+    	# 	equal( $last.prev().length, 1 ); <--- I'M TESTING THIS
+    	# 	equal( $last.prev()[0], $fixture.find(".prev .second")[0]);
+      #
+    	# 	// ordering correct according to jquery api
+    	# 	// http://api.jquery.com/prev/
+    	# 	equal( $all.prev().length, 2 );
+    	# 	equal( $all.prev()[0], $fixture.find(".prev .first")[0]);
+    	# 	equal( $all.prev()[1], $fixture.find(".prev .second")[0]);
+    	# 	equal( $all.prev()[2], undefined );
+    	# });
+
+    return
+
+  # PREVALL -----------------------------------------------------------------
+
+  # The PREVALL function returns an object with the set of ALL siblings before
+  # each element in the original set.
+
+  it 'PREVALL method should work', ->
+
+    casper.then ->
+
+      prevAllLength = @.evaluate ->
+
+        junction("body").append("<div class='prevall'></div>")
+        junction(".prevall").append("<div class='prevallOne'></div>")
+        junction(".prevall").append("<div class='prevallTwo'></div>")
+        junction(".prevall").append("<div class='prevallThree'></div>")
+
+        thing = junction(".prevall div.prevallThree")
+
+        return thing.prevAll().length
+
+      @.echo prevAllLength
+
+      prevAllLength.should.equal(2)
+
+      # This doesn't look like it's working. According to the Shoestring tests
+      # thing.prevAll().length should be returning 2.
+
+      # From SHOESTRING:
+
+  		# <div class="prevall">
+  		# 	<div class="first"></div>
+  		# 	<div class="second"></div>
+  		# 	<div class="third"></div>
+  		# </div>
+
+    	# test( '`.prevAll()`', function() {
+    	# 	var $last;
+      #
+    	# 	$last = $fixture.find( ".prevall div.third" );
+      #
+    	# 	equal( $last.prevAll().length, 2 ); <--- I"M TESTING THIS
+      #
+    	# 	// ordering correct according to jquery api
+    	# 	// http://api.jquery.com/prevall/
+    	# 	equal( $last.prevAll()[0], $fixture.find(".prevall .second")[0]);
+    	# 	equal( $last.prevAll()[1], $fixture.find(".prevall .first")[0]);
+    	# 	equal( $last.prevAll()[2], undefined );
+    	# });
+
+    return
+
+  # PROP --------------------------------------------------------------------
+
+  # The PROP function gets the property value on the first element or sets
+  # the property value on all the elements in the set.
+
+  it 'PROP method should get the property', ->
+
+    casper.then ->
+
+      property = @.evaluate ->
+        junction("body").append("<div class='prop'></div>")
+        return junction(".prop").prop("class")
+
+      property.should.equal("prop")
+
+    return
+
+  it 'PROP method should set the property', ->
+
+    casper.then ->
+
+      property = @.evaluate ->
+        junction(".prop").prop("class", "bar")
+        return junction(".bar").prop("class")
+
+      property.should.equal("bar")
+
+    return
+
+  # REMOVE ------------------------------------------------------------------
+
+  # The REMOVE function removes the current set of elements from the DOM.
+
+  it 'REMOVE method should work', ->
+
+    casper.then ->
+
+      @.evaluate ->
+        junction("body").append("<div class='remove'></div>")
+        junction(".remove").remove()
+
+      ".remove".should.be.notInDOM
+
+    return
+
+  # REMOVEATTR --------------------------------------------------------------
+
+  # The REMOVEATTR function removes an attribute from each element in the
+  # current set
+
+  it 'REMOVEATTR method should work', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        junction("body").append("<div class='removeattr' data-foo='bar'></div>")
+        return junction(".removeattr")[0]
+
+      after = @.evaluate ->
+        junction(".removeattr").removeAttr("data-foo")
+        return junction(".removeattr")[0]
+
+      afterAttributes = after.attributes[1]
+
+      expect(afterAttributes).to.be.empty
+
+    return
+
+  # REMOVECLASS -------------------------------------------------------------
+
+  # The REMOVECLASS function removes the class from the DOM for each element
+  # in the set.
+
+  it 'REMOVECLASS method should work', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        junction("body").append("<div class='removeClass foo'></div>")
+        return junction(".removeClass")[0]
+
+      after = @.evaluate ->
+        junction(".removeClass").removeClass("foo")
+        return junction(".removeClass")[0]
+
+      after.className.should.not.equal(before.className)
+
+    return
+
+  # REMOVEPROP --------------------------------------------------------------
+
+  # The REMOVEPROP function removes a property from each element of the
+  # current set.
+
+  it 'REMOVEPROP method should work', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        junction("body").append("<div class='removeProp'></div>")
+        return junction(".removeProp")
+
+      after = @.evaluate ->
+        junction(".removeProp").removeProp("class")
+        return junction(".removeProp")
+
+      expect(after).to.be.empty
+
+    return
+
+  # REPLACEWITH -------------------------------------------------------------
+
+  # The REPLACEWITH function replaces each element in the current set with
+  # the element or string specified.
+
+  it 'REPLACEWITH method should work', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        junction("body").append("<div class='replaceWith'></div>")
+        return junction(".replaceWith")[0]
+
+      after = @.evaluate ->
+        testThing = junction(".replaceWith")
+        thisOtherThing = testThing.replaceWith("<div class='replacement'></div>")
+        return junction(".replacement")[0]
+
+      @.echo before.className
+      @.echo after
+
+      expect(after).to.not.be.null
+
+      # This function doesn't seem to be working. There should be a div with a
+      # class of "replacement" but it doesn't exist. Also, it looks like it got
+      # rid of the "replaceWith" div, but didn't add the "replacement" one back?
+
+      # From SHOESTRING:
+
+  		# <div class="replace-with"></div>
+
+    	# test( '`.replaceWith()`', function() {
+    	# 	var $replaceWith = $fixture.find( ".replace-with" );
+      #
+    	# 	equal( $fixture.find( ".replace-with" ).length, 1 );
+      #
+    	# 	var old = $replaceWith.replaceWith( "<div class='replacement'></div>" );
+      #
+    	# 	equal( $fixture.find( ".replace-with" ).length, 0 );
+    	# 	equal( $fixture.find( ".replacement" ).length, 1 );
+    	# 	ok( old[0].className === "replace-with", "Returned element should be the original element copied" );
+    	# });
+      # TODO: When this test passes, write a test to check the before and after.
+
+    return
+
+  # SERIALIZE ---------------------------------------------------------------
+
+  # The SERIALIZE function serializes child input element values into
+  # an object
+
+  it 'SERIALIZE method should work', ->
+
+    casper.then ->
+
+      data = @.evaluate ->
+        junction("body").append("<div class='serialize'></div>")
+        testThing = junction(".serialize")
+        i = 0
+
+        while i < junction.inputTypes.length
+          type = junction.inputTypes[i]
+          input = "<input type='" + type + "'" + " name='" + type + "'" + " value='" + type + "'></input>"
+          testThing.append input
+          i++
+
+        otherThing = testThing.serialize()
+        return otherThing
+
+      data["color"].should.equal("color")
+
+    return
+
+  # SIBLINGS ----------------------------------------------------------------
+
+  # The SIBLINGS function gets all of the sibling elements for each element
+  # in the current set.
+
+  it 'SIBLINGS method should work', ->
+
+    casper.then ->
+
+      siblingCount = @.evaluate ->
+        junction("body").append("<div class='siblings'></div>")
+        junction(".siblings").append("<div class='siblingOne'></div>")
+        junction(".siblings").append("<div class='siblingTwo'></div>")
+        junction(".siblings").append("<div class='siblingThree'></div>")
+        return junction(".siblingTwo").siblings().length
+
+      siblingCount.should.equal(2)
+
+    return
+
+  # TEXT --------------------------------------------------------------------
+
+  # The TEXT function recursively retrieves the text content of each element
+  # in the current set.
+
+  it 'TEXT method should work', ->
+
+    casper.then ->
+
+      containerText = @.evaluate ->
+        junction("body").append("<div class='text'>Some Test Text</div>")
+        return junction(".text").text()
+
+      testText = "Some Test Text"
+
+      containerText.should.equal(testText)
+
+    return
+
+  # TOGGLECLASS -------------------------------------------------------------
+
+  # The TOGGLECLASS function should add a class to the selected element if
+  # it isn't found or remove the class if it is found.
+
+  # Note: This is only in this library. Not in SHOESTRING.
+
+  it 'TOGGLECLASS method should correctly remove the class', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        junction("body").append("<div class='toggleClass someClass'></div>")
+        return junction(".toggleClass").prop("class")
+
+      after = @.evaluate ->
+        junction(".toggleClass").toggleClass("someClass")
+        return junction(".toggleClass").prop("class")
+
+      after.should.not.equal(before)
+
+    return
+
+  it 'TOGGLECLASS method should correctly add the class', ->
+
+    casper.then ->
+
+      before = @.evaluate ->
+        return junction(".toggleClass").prop("class")
+
+      addClass = @.evaluate ->
+        junction(".toggleClass").toggleClass("someClass")
+        return junction(".toggleClass").prop("class")
+
+      addClass.should.not.equal(before)
+
+    return
+
+  # VAL ---------------------------------------------------------------------
+
+  # The VAL function gets the value of the first element or sets the value
+  # of all the elements in the current set.
+
+  it "VAL method should correctly get the value", ->
+
+    casper.then ->
+
+      # Check to see that the function gets the value of the first element
+      itemValue = @.evaluate ->
+        junction("body").append("<input type='color' name='color' value='blue' class='val'></input>")
+        valItem = junction(".val")
+        return valItem.val()
+
+      itemValue.should.equal("blue")
+
+    return
+
+  it 'VAL method should correctly set the value', ->
+
+    casper.then ->
+
+      # Check to see that the function sets the value on the elements.
+      itemSetValue = @.evaluate ->
+        valItem = junction(".val")
+        valItem.val("orange")
+        return valItem.val()
+
+      itemSetValue.should.equal("orange")
+
+    return
+
+  # WIDTH -------------------------------------------------------------------
+
+  # The WIDTH function gets the width value of the first element or sets the
+  # width for all the elements in the current set.
+
+  it "WIDTH method should work", ->
+
+    casper.then ->
+
+      widthValue = @.evaluate ->
+        junction("body").append("<div class='width'></div>")
+        widthItem = junction(".width")
+        widthItem.width("400px")
+        return widthItem.width()
+
+      widthValue.should.equal(400)
+
+    return
+
+  # WRAPINNER ---------------------------------------------------------------
+
+  # The WRAPINNER function wraps the child elements in the provided HTML
+
+  # TODO: Write a test to check if the function actually wrapped .inner
+  # with .wrapper
+
+  it 'WRAPINNER method should work', ->
+
+    casper.then ->
+
+      @.evaluate ->
+        junction("body").append("<div class='wrapinner'></div>")
+        junction(".wrapinner").append("<div class='inner'></div>")
+        wrapInnerItem = junction(".wrapinner")
+        wrapInnerItem.wrapInner("<div class='wrapper'></div>")
+
+      ".wrapper".should.be.inDOM
+
+    return
+
+  return
