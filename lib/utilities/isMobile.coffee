@@ -5,5 +5,5 @@
   @return {Boolean} true if Mobile
 
   ###
-junction.isMobile = =>
+junction.isMobile = ->
   /(Android|iPhone|iPad|iPod|IEMobile)/g.test( navigator.userAgent )
