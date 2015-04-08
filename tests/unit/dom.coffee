@@ -458,25 +458,6 @@ describe 'DOM tests', ->
 
     return
 
-    # NOTE: Couldn't figure out how to get this to work. Seems like this
-    # should work. The INDEX is returning null.
-
-    # From SHOESTRING:
-
-		# <div class="index">
-		# 	<div class="first"></div>
-		# 	<div class="second"></div>
-		# </div>
-
-  	# test('`.index()`', function() {
-  	# 	var $indexed = $fixture.find( ".index div" );
-  	# 	equal( $indexed.index( ".first" ), 0 ); <--- I'm testing this
-  	# 	equal( $indexed.index( ".second" ), 1 );
-    #
-  	# 	var $second = $fixture.find( ".index .second" );
-  	# 	equal( $second.index(), 1 );
-  	# });
-
   # INSERTAFTER -------------------------------------------------------------
 
   # The INSERTAFTER function inserts the current set of things AFTER the
@@ -559,7 +540,6 @@ describe 'DOM tests', ->
 
   it 'ISELEMENTINVIEW method should work', ->
 
-    # casper.then ->
     casper.viewport(1024, 768).then ->
 
       testing = @.evaluate ->
@@ -613,7 +593,6 @@ describe 'DOM tests', ->
         return thing.next().length
 
       nextLength.should.equal(2)
-
 
     return
 
@@ -782,9 +761,7 @@ describe 'DOM tests', ->
 
         return thing.prev().length
 
-
       prevLength.should.equal(1)
-
 
     return
 
@@ -810,31 +787,6 @@ describe 'DOM tests', ->
 
 
       prevAllLength.should.equal(2)
-
-      # This doesn't look like it's working. According to the Shoestring tests
-      # thing.prevAll().length should be returning 2.
-
-      # From SHOESTRING:
-
-  		# <div class="prevall">
-  		# 	<div class="first"></div>
-  		# 	<div class="second"></div>
-  		# 	<div class="third"></div>
-  		# </div>
-
-    	# test( '`.prevAll()`', function() {
-    	# 	var $last;
-      #
-    	# 	$last = $fixture.find( ".prevall div.third" );
-      #
-    	# 	equal( $last.prevAll().length, 2 ); <--- I"M TESTING THIS
-      #
-    	# 	// ordering correct according to jquery api
-    	# 	// http://api.jquery.com/prevall/
-    	# 	equal( $last.prevAll()[0], $fixture.find(".prevall .second")[0]);
-    	# 	equal( $last.prevAll()[1], $fixture.find(".prevall .first")[0]);
-    	# 	equal( $last.prevAll()[2], undefined );
-    	# });
 
     return
 
@@ -968,25 +920,6 @@ describe 'DOM tests', ->
 
       after.className.should.not.equal(before.className)
 
-      # This function doesn't seem to be working. There should be a div with a
-      # class of "replacement" but it doesn't exist. Also, it looks like it got
-      # rid of the "replaceWith" div, but didn't add the "replacement" one back?
-
-      # From SHOESTRING:
-
-  		# <div class="replace-with"></div>
-
-    	# test( '`.replaceWith()`', function() {
-    	# 	var $replaceWith = $fixture.find( ".replace-with" );
-      #
-    	# 	equal( $fixture.find( ".replace-with" ).length, 1 );
-      #
-    	# 	var old = $replaceWith.replaceWith( "<div class='replacement'></div>" );
-      #
-    	# 	equal( $fixture.find( ".replace-with" ).length, 0 );
-    	# 	equal( $fixture.find( ".replacement" ).length, 1 );
-    	# 	ok( old[0].className === "replace-with", "Returned element should be the original element copied" );
-    	# });
       # TODO: When this test passes, write a test to check the before and after.
 
     return
