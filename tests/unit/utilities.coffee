@@ -88,11 +88,12 @@ describe 'Utilities tests', ->
 
   it 'GETQUERYVARIABLE method should work', ->
 
-    casper.thenOpen 'http://localhost:3000?testing=all&thething=all&theotherthing=three', () ->
-
+    casper.thenOpen 'https://google.com/?testing=all&thething=all&theotherthing=three', () ->
+      @.page.injectJs("./out/junction.js")
       testThing = @.evaluate ->
         return junction.getQueryVariable "testing"
 
+      
       testThing[0].should.equal("testing=all")
 
     casper.back()
