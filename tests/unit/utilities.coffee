@@ -128,11 +128,6 @@ describe 'Utilities tests', ->
         testThing = junction("#isElement")
         __utils__.echo testThing
         return junction.isElementInView testThing
-      # testing = @.viewport(1024, 768).then ->
-      #   @.capture("../images/test2.png")
-      #   @.evaluate ->
-      #     testThing = junction("#isElement")
-      #     return junction.isElementInView testThing[0]
 
       @.echo testing
       testing.should.be.true
@@ -141,10 +136,10 @@ describe 'Utilities tests', ->
 
   # ISMOBILE ------------------------------------------------------------------
 
-  # it 'ISMOBILE method should work', ->
-  #
-  #   casper.then ->
-  #
+  it 'ISMOBILE method should work', ->
+
+    casper.then ->
+
   #     casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)')
   #     casper.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
   #
@@ -176,9 +171,43 @@ describe 'Utilities tests', ->
   #     #       @echo value
   #     #   return
   #
-  #   return
+    return
 
   # LAST ----------------------------------------------------------------------
+
+  # The LAST function returns the last value of array or value certain length
+  # from end
+
+  it 'LAST method should work', ->
+
+    casper.then ->
+
+      theLastOne = @.evaluate ->
+        myArray = [1,2,3,4,5]
+        return junction(myArray).last()
+
+      theLastOne[0].should.equal(5)
+
+    return
+
   # TRUTHFUL ------------------------------------------------------------------
+
+  # the TRUTHFUL function takes an array with true and false values and returns
+  # only the truthful ones.
+
+  # it 'TRUTHFUL method should work', ->
+  #
+  #   casper.then ->
+  #
+  #     theTrueOnes = @.evaluate ->
+  #
+  #       myArray[true,false,true,false,true]
+  #       return junction(myArray).truthful()
+  #
+  #     @.echo theTrueOnes
+  #
+  #     theTrueOne.length.should.equal(3)
+  #
+  #   return
 
   return
