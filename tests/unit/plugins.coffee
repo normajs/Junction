@@ -47,7 +47,6 @@ describe "Plugins tests", ->
 
         return window.pluginTest
 
-      @.echo updated
 
       updated.should.equal true
 
