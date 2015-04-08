@@ -136,6 +136,8 @@ describe 'Utilities tests', ->
 
     return
 
+
+
   # TRUTHFUL ------------------------------------------------------------------
 
   # the TRUTHFUL function takes an array with true and false values and returns
