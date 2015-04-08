@@ -13,7 +13,6 @@ describe 'Events tests', ->
       testThing = @.evaluate ->
         junction("body").append("<div id='bindTest'></div>")
         junction("#bindTest").bind("click", () ->
-          # __utils__.echo "bindTest click"
           junction("#bindTest").addClass("bindTest")
         )
         return junction("#bindTest")
@@ -34,21 +33,20 @@ describe 'Events tests', ->
 
     casper.then ->
 
-      count = 0
-      @.evaluate ->
+      testThing = @.evaluate ->
 
-        junction("body").append("<div id='oneTest'></div>")
-
-        junction("#oneTest").one("click", () ->
-          count++
-          junction("#oneTest").addClass("oneTest")
+        junction("body").append("<div id='foobar'></div>")
+        junction("#foobar").one("click", () ->
+          junction("#foobar").addClass("foobar")
         )
-        document.getElementById("oneTest").click()
-        document.getElementById("oneTest").click()
+        return junction("#foobar")
+
+      i = 1
+      @.click("#" + testThing[0].id)
+
+      ".foobar".should.be.inDOM
 
 
-      ".oneTest".should.be.inDOM
-      count.should.equal 1
 
     return
 
@@ -63,50 +61,20 @@ describe 'Events tests', ->
 
       @.evaluate ->
         junction("body").append("<div id='triggerTest'></div>")
+
         junction("#triggerTest").bind("click", () ->
-          __utils__.echo "triggerTest click"
           junction("#triggerTest").addClass("triggerTest")
         )
 
-      @.evaluate ->
         junction("#triggerTest").trigger("click")
+
+        return
+
 
       ".triggerTest".should.be.inDOM
 
     return
 
-  # TRIGGERHANDLER ------------------------------------------------------------
-
-  # The TRIGGERHANDLER event triggers an event on the first element in the
-  # set.
-
-  it 'TRIGGERHANDLER method should work', ->
-
-    casper.then ->
-
-      @.evaluate ->
-        junction("body").append("<div id='triggerHandler'></div>")
-        junction("#triggerHandler").append("<div id='triggerHandler1'></div>")
-        junction("#triggerHandler").append("<div id='triggerHandler2'></div>")
-        junction("#triggerHandler1").bind("click", () ->
-          __utils__.echo "triggerHandler1 click"
-          junction("#triggerHandler1").addClass("triggerHandler1")
-        )
-        junction("#triggerHandler2").bind("click", () ->
-          __utils__.echo "triggerHandler2 click"
-          junction("#triggerHandler2").addClass("triggerHandler2")
-        )
-
-      @.evaluate ->
-        theKids = junction("#triggerHandler").children()
-        __utils__.echo theKids.length
-        theKids.each ->
-          __utils__.echo @.id
-        theKids.triggerHandler("click")
-
-      ".triggerHandler1".should.be.inDOM
-
-    return
 
   # UNBIND --------------------------------------------------------------------
 
@@ -118,17 +86,16 @@ describe 'Events tests', ->
 
       testThing = @.evaluate ->
         junction("body").append("<div id='unbindTest'></div>")
+
         junction("#unbindTest").bind("click", () ->
-          __utils__.echo "unbindTest click"
           junction("#unbindTest").addClass("unbindTest")
         )
-        __utils__.echo junction("#unbindTest")
+
         junction("#unbindTest").unbind("click")
-        __utils__.echo junction("#unbindTest") # <--- This should be an HTMLDivElement
+
         return junction("#unbindTest")
 
-      @.echo "junction('#unbindTest') is returning null after calling .unbind()"
-      @.echo testThing
+
       @.click("#" + testThing[0].id)
 
       ".unbindTest".should.not.be.inDOM

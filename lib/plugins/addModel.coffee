@@ -1,5 +1,10 @@
 
-junction.addModel = (scope, model, attr, cb, force) ->
+junction.addModel = (scope, model, attr, force, cb) ->
+
+  # force is optional
+  if typeof force is "function"
+    force = false
+    cb = force
 
   for target in scope.querySelectorAll(attr)
     @.nameSpace target, attr, model, force
