@@ -16,7 +16,6 @@
 class junction._debounce
 
   constructor: (@data) ->
-    console.log @data
     window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
 
     @.callback = @data
@@ -37,4 +36,4 @@ class junction._debounce
 
 junction.debounce = (callback) ->
 
-  new @_.debounce callback
+  new @._.debounce callback

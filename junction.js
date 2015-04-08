@@ -239,7 +239,6 @@ junction._debounce = (function () {
         this.handleEvent = bind(this.handleEvent, this);
         this.requestTick = bind(this.requestTick, this);
         this.update = bind(this.update, this);
-        console.log(this.data);
         window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
         this.callback = this.data;
         this.ticking = false;
@@ -368,33 +367,6 @@ junction.getQueryVariable = function (val) {
     return results;
 };
 
-junction.isElement = function (el) {
-    if (typeof HTMLElement === "object") {
-        return el instanceof HTMLElement;
-    } else {
-        return el && typeof el === "object" && el !== null && el.nodeType === 1 && typeof el.nodeName === "string";
-    }
-};
-
-
-/*
-
-@function isElementInView()
-
-@param {Element} element to check against
-
-@return {Boolean} if element is in view
- */
-
-junction.isElementInView = function (element) {
-    var coords;
-    if (element instanceof jQuery) {
-        element = element.get(0);
-    }
-    coords = element.getBoundingClientRect();
-    return (Math.abs(coords.left) >= 0 && Math.abs(coords.top)) <= (window.innerHeight || document.documentElement.clientHeight);
-};
-
 
 /*
 
@@ -403,11 +375,9 @@ junction.isElementInView = function (element) {
   @return {Boolean} true if Mobile
  */
 
-junction.isMobile = (function (_this) {
-    return function () {
-        return /(Android|iPhone|iPad|iPod|IEMobile)/g.test(navigator.userAgent);
-    };
-})(this);
+junction.isMobile = function () {
+    return /(Android|iPhone|iPad|iPod|IEMobile)/g.test(navigator.userAgent);
+};
 
 
 /*
@@ -1390,6 +1360,35 @@ junction.fn.is = function (selector) {
         }
     });
     return returns;
+};
+
+junction.fn.isElement = function () {
+    var el;
+    el = this[0];
+    return (typeof HTMLElement === "object" ? el instanceof HTMLElement : el && typeof el === "object" && el !== null && el.nodeType === 1 && typeof el.nodeName === "string");
+};
+
+
+/*
+
+@function isElementInView()
+
+@param {Element} element to check against
+
+@return {Boolean} if element is in view
+ */
+
+junction.fn.isElementInView = function () {
+    var coords, element;
+    element = this[0];
+    if ((typeof jQuery !== "undefined" && jQuery !== null) && element instanceof jQuery) {
+        element = element.get(0);
+    }
+    if (element instanceof junction) {
+        element = element.get(0);
+    }
+    coords = element.getBoundingClientRect();
+    return (Math.abs(coords.left) >= 0 && Math.abs(coords.top)) <= (window.innerHeight || document.documentElement.clientHeight);
 };
 
 

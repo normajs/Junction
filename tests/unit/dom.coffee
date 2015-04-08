@@ -537,6 +537,41 @@ describe 'DOM tests', ->
 
     return
 
+  # ISELEMENT -----------------------------------------------------------------
+
+  # The ISELEMENT function determines if the HTMLElement is an actual element.
+
+  it 'ISELEMENT method should work', ->
+
+    casper.then ->
+
+      thing = @.evaluate ->
+        junction("body").append("<div id='isElement'>HELLO</div>")
+        return junction("#isElement").isElement()
+
+      thing.should.be.true
+
+    return
+
+  # ISELEMENTINVIEW -----------------------------------------------------------
+
+  # The ISELEMENTINVIEW function determines if the element is in the view.
+
+  it 'ISELEMENTINVIEW method should work', ->
+
+    # casper.then ->
+    casper.viewport(1024, 768).then ->
+
+      testing = @.evaluate ->
+        junction("body").append('<div id="seeMe" style="width: 10px; height: 10px; margin-top:10000px">Can you see me</div>')
+
+        return junction("#seeMe").isElementInView()
+
+      testing.should.be.false
+
+    return
+
+
   # LAST --------------------------------------------------------------------
 
   # The LAST function returns the last element of a set.

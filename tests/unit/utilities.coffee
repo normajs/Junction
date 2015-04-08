@@ -95,44 +95,10 @@ describe 'Utilities tests', ->
 
       testThing[0].should.equal("testing=all")
 
-    return
-
-  # ISELEMENT -----------------------------------------------------------------
-
-  # The ISELEMENT function determines if the HTMLElement is an actual element.
-
-  it 'ISELEMENT method should work', ->
-
-    casper.then ->
-
-      thing = @.evaluate ->
-        junction("body").append("<div id='isElement'>HELLO</div>")
-        testThing = junction("#isElement")
-        return junction.isElement(testThing[0])
-
-      thing.should.be.true
+    casper.back()
 
     return
 
-  # ISELEMENTINVIEW -----------------------------------------------------------
-
-  # The ISELEMENTINVIEW function determines if the element is in the view.
-
-  it 'ISELEMENTINVIEW method should work', ->
-
-    # casper.then ->
-    casper.viewport(1024, 768).then ->
-
-      @.capture("../images/test.png")
-      testing = @.evaluate ->
-        testThing = junction("#isElement")
-        __utils__.echo testThing
-        return junction.isElementInView testThing
-
-      @.echo testing
-      testing.should.be.true
-
-    return
 
   # ISMOBILE ------------------------------------------------------------------
 
@@ -140,74 +106,34 @@ describe 'Utilities tests', ->
 
     casper.then ->
 
-  #     casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)')
-  #     casper.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
-  #
-  #     casper.thenOpen 'http://google.com/', () ->
-  #       @.echo("I'm a Mac.")
-  #       isThisMobile = @.evaluate ->
-  #         return junction.isMobile()
-  #       @.echo isThisMobile
-  #       @.capture("../images/mac.png")
-  #       test.assertEquals isThisMobile, false, ["ISMOBILE correctly identifies non-mobile user agents."]
-  #       @.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
-  #
-  #     casper.thenOpen 'http://google.com/', () ->
-  #       @.echo "I'm an iPhone 5S on iOS 8.1.3"
-  #       isThisMobile = @.evaluate ->
-  #         return junction.isMobile()
-  #       @.echo isThisMobile
-  #       @.capture("../images/iphone.png")
-  #       @.evaluate ->
-  #         __utils__.echo window.navigator.userAgent
-  #       @.echo JSON.stringify @.options.pageSettings.userAgent
-  #       test.assertEquals isThisMobile, true, ["ISMOBILE correctly identifies mobile user agents."]
-  #
-  #     # casper.on 'resource.requested', (resource) ->
-  #     #   for obj of resource.headers
-  #     #     name = resource.headers[obj].name
-  #     #     value = resource.headers[obj].value
-  #     #     if name == 'User-Agent'
-  #     #       @echo value
-  #     #   return
-  #
+      casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)')
+
+
+      casper.then ->
+        @.echo("I'm a Mac.")
+        isThisMobile = @.evaluate ->
+          return junction.isMobile()
+        @.echo isThisMobile
+        @.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
+
+      casper.then ->
+        @.echo "I'm an iPhone 5S on iOS 8.1.3"
+        isThisMobile = @.evaluate ->
+          return junction.isMobile()
+        @.echo isThisMobile
+
+
+      # casper.on 'resource.requested', (resource) ->
+      #   for obj of resource.headers
+      #     name = resource.headers[obj].name
+      #     value = resource.headers[obj].value
+      #     if name == 'User-Agent'
+      #       @echo value
+      #   return
+
     return
 
   # LAST ----------------------------------------------------------------------
-
-  # The LAST function returns the last value of array or value certain length
-  # from end
-
-  it 'LAST method should work', ->
-
-    casper.then ->
-
-      theLastOne = @.evaluate ->
-        myArray = [1,2,3,4,5]
-        return junction(myArray).last()
-
-      theLastOne[0].should.equal(5)
-
-    return
-
   # TRUTHFUL ------------------------------------------------------------------
-
-  # the TRUTHFUL function takes an array with true and false values and returns
-  # only the truthful ones.
-
-  # it 'TRUTHFUL method should work', ->
-  #
-  #   casper.then ->
-  #
-  #     theTrueOnes = @.evaluate ->
-  #
-  #       myArray[true,false,true,false,true]
-  #       return junction(myArray).truthful()
-  #
-  #     @.echo theTrueOnes
-  #
-  #     theTrueOne.length.should.equal(3)
-  #
-  #   return
 
   return

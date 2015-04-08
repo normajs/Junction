@@ -7,8 +7,18 @@
 @return {Boolean} if element is in view
 
 ###
-junction.isElementInView = (element) ->
-  if element instanceof jQuery then element = element.get(0)
+junction.fn.isElementInView = () ->
+
+  element = @[0]
+
+
+  if jQuery? and element instanceof jQuery
+    element = element.get(0)
+
+  if element instanceof junction
+    element = element.get(0)
+
+
   coords = element.getBoundingClientRect()
 
   (

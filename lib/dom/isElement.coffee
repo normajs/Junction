@@ -1,7 +1,9 @@
 
-junction.isElement = (el) ->
+junction.fn.isElement = () ->
 
-  (
+  el = @[0]
+
+  return (
     if typeof HTMLElement is "object"
         el instanceof HTMLElement
     else el and
