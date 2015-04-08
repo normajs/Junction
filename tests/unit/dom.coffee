@@ -1132,7 +1132,7 @@ describe 'DOM tests', ->
   # The VAL function gets the value of the first element or sets the value
   # of all the elements in the current set.
 
-  it "VAL method should correctly get the value", ->
+  it 'VAL method should correctly get the value', ->
 
     casper.then ->
 
@@ -1165,7 +1165,7 @@ describe 'DOM tests', ->
   # The WIDTH function gets the width value of the first element or sets the
   # width for all the elements in the current set.
 
-  it "WIDTH method should work", ->
+  it 'WIDTH method should work', ->
 
     casper.then ->
 
