@@ -21,14 +21,14 @@ junction.fn.next = ->
     found = false
 
     for child, index in children
-      item = children.item[index]
+      item = children.item(index)
 
       if found and item.nodeType is 1
         returns.push item
+        break
 
-      if item is this
+      if item is @
         found = true
 
-      false
 
   junction returns

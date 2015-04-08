@@ -16,7 +16,7 @@ junction.fn.prepend = (fragment) ->
 
   @each (index) ->
 
-    for piece in fragement
+    for piece, index in fragment
 
       insertEl = (if index > 0 then piece.cloneNode(true) else piece)
 

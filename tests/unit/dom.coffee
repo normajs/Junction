@@ -417,9 +417,9 @@ describe 'DOM tests', ->
 
       @.evaluate ->
 
-        junction("body").append("<div id='html'></div>")
-        junction("#html").append("<div id='htmlChildOne'></div>")
-        junction("#html").append("<div id='htmlChildTwo'></div>")
+        junction("body").append("<div id=\"html\"></div>")
+        junction("#html").append("<div id=\"htmlChildOne\"></div>")
+        junction("#html").append("<div id=\"htmlChildTwo\"></div>")
 
       htmlOne = @.evaluate ->
 
@@ -447,14 +447,12 @@ describe 'DOM tests', ->
 
       @.evaluate ->
         junction("body").append("<div id='index-test'></div>")
-        junction(".index").append("<div class='childOne'></div>")
-        junction(".index").append("<div class='childTwo'></div>")
+        junction("#index-test").append("<div class='childOne'></div>")
+        junction("#index-test").append("<div class='childTwo'></div>")
 
       testThing = @.evaluate ->
-        thing = junction("#index-test div")
-        return thing.index(".childOne")
-
-      @.echo testThing
+        thing = junction("#index-test div").index(".childOne")
+        return thing
 
       testThing.should.equal(0)
 
@@ -577,40 +575,10 @@ describe 'DOM tests', ->
         junction(".next").append("<div class='three'></div>")
 
         thing = junction("body").find(".next > div")
-        __utils__.echo thing.length
         return thing.next().length
-
-      @.echo nextLength
 
       nextLength.should.equal(2)
 
-      # NOTE: Maybe I don't know what I'm doing but I don't think this is
-      # working correctly. There are 3 things inside .next so thing.next().length
-      # should be returning 2. Instead it's returning 0.
-
-      # From SHOESTRING:
-
-      # <div class="next">
-  		# 	<div class="first"></div>
-  		# 	<div class="second"></div>
-  		# 	<div class="third"></div>
-  		# </div>
-      #
-    	# test( '`.next()`', function() {
-    	# 	var $first, $all;
-      #
-    	# 	$first = $fixture.find( ".next .first" );
-    	# 	$all = $fixture.find( ".next > div" );
-      #
-      #
-    	# 	equal( $first.next().length, 1 );
-    	# 	equal( $first.next()[0], $fixture.find(".next .second")[0]);
-      #
-    	# 	equal( $all.next().length, 2 ); <--- I'M TESTING THIS
-    	# 	equal( $all.next()[0], $fixture.find(".next .second")[0]);
-    	# 	equal( $all.next()[1], $fixture.find(".next .third")[0]);
-    	# 	equal( $all.next()[2], undefined );
-    	# });
 
     return
 
@@ -731,8 +699,6 @@ describe 'DOM tests', ->
         temp = te.firstChild
         return temp
 
-      @.echo testThing.attributes[0].textContent
-
       testThing.attributes[0].textContent.should.equal("prepend-test-two")
 
     return
@@ -756,7 +722,6 @@ describe 'DOM tests', ->
         temp = te.firstChild
         return temp
 
-      @.echo testThing.attributes[0].textContent
 
       testThing.attributes[0].textContent.should.equal("prependTo-test-two")
 
@@ -782,37 +747,9 @@ describe 'DOM tests', ->
 
         return thing.prev().length
 
-      @.echo prevLength
 
       prevLength.should.equal(1)
 
-      # It doesn't seem like this is working either. According to the Shoestring
-      # tests thing.prev().length here should return 1.
-
-      # From SHOESTRING:
-
-  		# <div class="prev">
-  		# 	<div class="first"></div>
-  		# 	<div class="second"></div>
-  		# 	<div class="third"></div>
-  		# </div>
-
-    	# test( '`.prev()`', function() {
-    	# 	var $last, $all;
-      #
-    	# 	$last = $fixture.find( ".prev div.third" );
-    	# 	$all = $fixture.find( ".prev > div" );
-      #
-    	# 	equal( $last.prev().length, 1 ); <--- I'M TESTING THIS
-    	# 	equal( $last.prev()[0], $fixture.find(".prev .second")[0]);
-      #
-    	# 	// ordering correct according to jquery api
-    	# 	// http://api.jquery.com/prev/
-    	# 	equal( $all.prev().length, 2 );
-    	# 	equal( $all.prev()[0], $fixture.find(".prev .first")[0]);
-    	# 	equal( $all.prev()[1], $fixture.find(".prev .second")[0]);
-    	# 	equal( $all.prev()[2], undefined );
-    	# });
 
     return
 
@@ -836,7 +773,6 @@ describe 'DOM tests', ->
 
         return thing.prevAll().length
 
-      @.echo prevAllLength
 
       prevAllLength.should.equal(2)
 
@@ -995,10 +931,7 @@ describe 'DOM tests', ->
         thisOtherThing = testThing.replaceWith("<div class='replacement'></div>")
         return junction(".replacement")[0]
 
-      @.echo before.className
-      @.echo after
-
-      expect(after).to.not.be.null
+      after.className.should.not.equal(before.className)
 
       # This function doesn't seem to be working. There should be a div with a
       # class of "replacement" but it doesn't exist. Also, it looks like it got

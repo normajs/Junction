@@ -1296,44 +1296,45 @@ junction.fn.html = function (html) {
 
 (function () {
     var _getIndex;
-    return _getIndex = function (set, test) {
-        var element, item, k, len;
-        for (k = 0, len = set.length; k < len; k++) {
-            item = set[k];
-            element = (set.item ? set.item(item) : item);
+    _getIndex = function (set, test) {
+        var element, i, result;
+        i = result = 0;
+        while (i < set.length) {
+            element = set.item ? set.item(i) : set[i];
             if (test(element)) {
                 return result;
             }
             if (element.nodeType === 1) {
                 result++;
             }
+            i++;
         }
         return -1;
+    };
 
 /*
-    
-      Find the index in the current set for the passed
-      selector. Without a selector it returns the
-      index of the first node within the array of its siblings.
-    
-      @param {string|undefined} selector The selector used to search for the index.
-      @return {integer}
-      @this {junction}
-     */
-        return junction.fn.index = function (selector) {
-            var children, self;
-            self = this;
-            if (selector === undefined) {
-                children = ((this[0] && this[0].parentNode) || document.documentElement).childNodes;
-                return _getIndex(children, function (element) {
-                    return self[0] === element;
-                });
-            } else {
-                return _getIndex(self, function (element) {
-                    return element === (junction(selector, element.parentNode)[0]);
-                });
-            }
-        };
+  
+    Find the index in the current set for the passed
+    selector. Without a selector it returns the
+    index of the first node within the array of its siblings.
+  
+    @param {string|undefined} selector The selector used to search for the index.
+    @return {integer}
+    @this {junction}
+   */
+    return junction.fn.index = function (selector) {
+        var children, self;
+        self = this;
+        if (selector === undefined) {
+            children = ((this[0] && this[0].parentNode) || document.documentElement).childNodes;
+            return _getIndex(children, function (element) {
+                return self[0] === element;
+            });
+        } else {
+            return _getIndex(self, function (element) {
+                return element === (junction(selector, element.parentNode)[0]);
+            });
+        }
     };
 })();
 
@@ -1423,14 +1424,16 @@ junction.fn.next = function () {
         results1 = [];
         for (index = k = 0, len = children.length; k < len; index = ++k) {
             child = children[index];
-            item = children.item[index];
+            item = children.item(index);
             if (found && item.nodeType === 1) {
                 returns.push(item);
+                break;
             }
             if (item === this) {
-                found = true;
+                results1.push(found = true);
+            } else {
+                results1.push(void 0);
             }
-            results1.push(false);
         }
         return results1;
     });
@@ -1555,8 +1558,8 @@ junction.fn.prepend = function (fragment) {
     return this.each(function (index) {
         var insertEl, k, len, piece, results1;
         results1 = [];
-        for (k = 0, len = fragement.length; k < len; k++) {
-            piece = fragement[k];
+        for (index = k = 0, len = fragment.length; k < len; index = ++k) {
+            piece = fragment[index];
             insertEl = (index > 0 ? piece.cloneNode(true) : piece);
             if (this.firstChild) {
                 results1.push(this.insertBefore(insertEl, this.firstChild));
@@ -1605,14 +1608,16 @@ junction.fn.prev = function () {
         results1 = [];
         for (index = k = children.length - 1; k >= 0; index = k += -1) {
             child = children[index];
-            item = children.item[index];
+            item = children.item(index);
             if (found && item.nodeType === 1) {
                 returns.push(item);
+                break;
             }
             if (item === this) {
-                found = true;
+                results1.push(found = true);
+            } else {
+                results1.push(void 0);
             }
-            results1.push(false);
         }
         return results1;
     });
@@ -1795,7 +1800,7 @@ junction.fn.replaceWith = function (fragment) {
             return this.parentNode.removeChild(this);
         }
     });
-    return junction(retunrs);
+    return junction(returns);
 };
 
 junction.inputTypes = ["text", "hidden", "password", "color", "date", "datetime", "email", "month", "number", "range", "search", "tel", "time", "url", "week"];

@@ -20,27 +20,28 @@ junction.fn.replaceWith = (fragment) ->
 
   @each (index) ->
 
-    clone = this.cloneNode true
+    clone = @.cloneNode true
 
     returns.push clone
 
-    return if !this.parentNode
+    if not @.parentNode
+      return
 
     if fragment.length is 1
 
       insertEl = (if index > 0 then fragment[0].cloneNode(true) else fragment[0])
 
-      this.parentNode.replaceChild insertEl, this
+      @.parentNode.replaceChild insertEl, @
 
     else
 
       for piece in fragment
         insertEl = (if index > 0 then piece.cloneNode(true) else piece)
 
-        this.parentNode.insertBefore insertEl, this.nextSibling
+        @.parentNode.insertBefore insertEl, @.nextSibling
         return
 
-      this.parentNode.removeChild this
+      @.parentNode.removeChild @
 
 
-  junction retunrs
+  junction returns
