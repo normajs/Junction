@@ -74,15 +74,8 @@ describe 'Utilities tests', ->
           element.zanzabar = "zulu"
           testObject.push element
 
-        arr = junction.getKeys testObject, "zulu"
-        # arr = junction.getKeys testObject[0], "zulu" # <--- THIS WORKS
+        arr = junction.getKeys testObject[0], "zulu"
         return arr
-
-      @.echo testArray
-      @.echo "This doesn't work if I just pass the testObject object to the"
-      @.echo "getKeys function. It DOES work if I pass just one specific item"
-      @.echo "testObject doesn't work. testObject[0] does."
-      @.echo "I would think I would be able to pass the whole object."
 
       testArray[0].should.equal("zanzabar")
 
@@ -98,13 +91,9 @@ describe 'Utilities tests', ->
     casper.thenOpen 'http://localhost:3000?testing=all&thething=all&theotherthing=three', () ->
 
       testThing = @.evaluate ->
-        return junction.getQueryVariable "all"
+        return junction.getQueryVariable "testing"
 
-      @.echo testThing
-      @.echo "testThing is returning null. I think the problem is somewhere in"
-      @.echo "setting the results in the function. Maybe."
-
-      testThing[0].should.equal("testing")
+      testThing[0].should.equal("testing=all")
 
     return
 
@@ -129,23 +118,26 @@ describe 'Utilities tests', ->
 
   # The ISELEMENTINVIEW function determines if the element is in the view.
 
-  # it 'ISELEMENTINVIEW method should work', ->
-  #
-  #   casper.then ->
-  #
-  #     @.capture("../images/test.png")
-  #     testing = @.viewport(1024, 768).then ->
-  #       @.capture("../images/test2.png")
-  #       @.evaluate ->
-  #         testThing = junction("#isElement")
-  #         __utils__.echo testThing
-  #         return junction.isElementInView testThing[0]
-  #
-  #     @.echo testing
-  #
-  #     testing.should.be.true
-  #
-  #   return
+  it 'ISELEMENTINVIEW method should work', ->
+
+    # casper.then ->
+    casper.viewport(1024, 768).then ->
+
+      @.capture("../images/test.png")
+      testing = @.evaluate ->
+        testThing = junction("#isElement")
+        __utils__.echo testThing
+        return junction.isElementInView testThing
+      # testing = @.viewport(1024, 768).then ->
+      #   @.capture("../images/test2.png")
+      #   @.evaluate ->
+      #     testThing = junction("#isElement")
+      #     return junction.isElementInView testThing[0]
+
+      @.echo testing
+      testing.should.be.true
+
+    return
 
   # ISMOBILE ------------------------------------------------------------------
 
