@@ -104,36 +104,54 @@ describe 'Utilities tests', ->
 
   it 'ISMOBILE method should work', ->
 
+    casper.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
+
     casper.then ->
 
-      casper.userAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X)')
+      isThisMobile = @.evaluate ->
+        __utils__.echo navigator.userAgent
+        casper.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
+        return junction.isMobile()
+      @.echo isThisMobile
 
-
-      casper.then ->
-        @.echo("I'm a Mac.")
-        isThisMobile = @.evaluate ->
-          return junction.isMobile()
-        @.echo isThisMobile
-        @.userAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4')
-
-      casper.then ->
-        @.echo "I'm an iPhone 5S on iOS 8.1.3"
-        isThisMobile = @.evaluate ->
-          return junction.isMobile()
-        @.echo isThisMobile
-
-
-      # casper.on 'resource.requested', (resource) ->
-      #   for obj of resource.headers
-      #     name = resource.headers[obj].name
-      #     value = resource.headers[obj].value
-      #     if name == 'User-Agent'
-      #       @echo value
-      #   return
+      isThisMobile.should.be.true
 
     return
 
+
   # LAST ----------------------------------------------------------------------
+
+  # The LAST function returns the last value of array or value certain length
+  # from end
+
+  it 'LAST method should work', ->
+
+    casper.then ->
+
+      theLastOne = @.evaluate ->
+        myArray = [1,2,3,4,5]
+        return junction.last(myArray)
+
+      theLastOne.should.equal(5)
+
+    return
+
   # TRUTHFUL ------------------------------------------------------------------
+
+  # the TRUTHFUL function takes an array with true and false values and returns
+  # only the truthful ones.
+
+  it 'TRUTHFUL method should work', ->
+
+    casper.then ->
+
+      theTrueOnes = @.evaluate ->
+
+        myArray = [true,false,true,false,true]
+        return junction.truthful(myArray)
+
+      theTrueOnes.length.should.equal(3)
+
+    return
 
   return
