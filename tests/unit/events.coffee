@@ -34,26 +34,21 @@ describe 'Events tests', ->
 
     casper.then ->
 
-      testThing = @.evaluate ->
+      count = 0
+      @.evaluate ->
+
         junction("body").append("<div id='oneTest'></div>")
-        __utils__.echo junction("#oneTest")	# <--- this is an HTMLDivElement
+
         junction("#oneTest").one("click", () ->
-          __utils__.echo "oneTest click"
+          count++
           junction("#oneTest").addClass("oneTest")
         )
-        __utils__.echo junction("#oneTest")	# <--- this should be an HTMLDivElement
-        return junction("#oneTest")
+        document.getElementById("oneTest").click()
+        document.getElementById("oneTest").click()
 
-      @.echo "This is failing because after calling .one() on the #oneTest"
-      @.echo "object, it is null. It should be returning an HTMLDivElement."
-      @.echo testThing
-      @.echo "first click"
-      @.click("#" + testThing[0].id)
-      @.echo "in between clicks"
-      @.click("#" + testThing[0].id)
-      @.echo "end of clicks"
 
       ".oneTest".should.be.inDOM
+      count.should.equal 1
 
     return
 
@@ -141,4 +136,3 @@ describe 'Events tests', ->
     return
 
   return
-
