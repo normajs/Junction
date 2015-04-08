@@ -195,19 +195,17 @@ describe 'Utilities tests', ->
   # the TRUTHFUL function takes an array with true and false values and returns
   # only the truthful ones.
 
-  # it 'TRUTHFUL method should work', ->
-  #
-  #   casper.then ->
-  #
-  #     theTrueOnes = @.evaluate ->
-  #
-  #       myArray[true,false,true,false,true]
-  #       return junction(myArray).truthful()
-  #
-  #     @.echo theTrueOnes
-  #
-  #     theTrueOne.length.should.equal(3)
-  #
-  #   return
+  it 'TRUTHFUL method should work', ->
+
+    casper.then ->
+
+      theTrueOnes = @.evaluate ->
+
+        myArray = [true,false,true,false,true]
+        return junction.truthful(myArray)
+
+      theTrueOnes.length.should.equal(3)
+
+    return
 
   return
