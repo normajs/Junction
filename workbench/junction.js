@@ -12,7 +12,7 @@
   @returns junction
   @this window
  */
-var _$, _junction, junction, bind = function (fn, me) {
+var _$, _junction, _nameSpace, junction, bind = function (fn, me) {
     return function () {
         return fn.apply(me, arguments);
     };
@@ -239,7 +239,6 @@ junction._debounce = (function () {
         this.handleEvent = bind(this.handleEvent, this);
         this.requestTick = bind(this.requestTick, this);
         this.update = bind(this.update, this);
-        console.log(this.data);
         window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
         this.callback = this.data;
         this.ticking = false;
@@ -2295,53 +2294,7 @@ junction.fn.unbind = function (event, callback) {
 
 junction.fn.off = junction.fn.unbind;
 
-junction.addModel = function (scope, model, attr, force, cb) {
-    var k, len, ref, target;
-    if (typeof force === "function") {
-        force = false;
-        cb = force;
-    }
-    ref = scope.querySelectorAll(attr);
-    for (k = 0, len = ref.length; k < len; k++) {
-        target = ref[k];
-        this.nameSpace(target, attr, model, force);
-    }
-    if (scope.querySelectorAll(attr).length) {
-        if (typeof cb === "function") {
-            return cb();
-        }
-    }
-};
-
-junction.addPlugin = function (name, obj, attr, cb) {
-    var k, len, plugin, ref, savePlugin;
-    savePlugin = (function (_this) {
-        return function (name, obj, attr, cb) {
-            return _this['plugins'][name] = {
-                _id: name,
-                model: obj,
-                attr: attr,
-                callback: cb
-            };
-        };
-    })(this);
-    if (this.plugins.length) {
-        ref = this.plugins;
-        for (k = 0, len = ref.length; k < len; k++) {
-            plugin = ref[k];
-            if (plugin._id === obj.name) {
-                savePlugin(name, obj, attr, cb);
-            }
-            this.addModel(document, obj, attr, cb);
-            return;
-        }
-    } else {
-        savePlugin(name, obj, attr, cb);
-    }
-    return this.addModel(document, obj, attr, cb);
-};
-
-junction.nameSpace = function (target, attribute, obj, force) {
+_nameSpace = function (target, attribute, obj, force) {
     var originalAttr, params;
     originalAttr = attribute.replace(/[\[\]']+/g, '');
     params = target.attributes[originalAttr].value.split(',');
@@ -2358,8 +2311,60 @@ junction.nameSpace = function (target, attribute, obj, force) {
     }
 };
 
+junction.addModel = function (scope, model, attr, force, cb) {
+    var k, len, ref, target;
+    if (typeof force === "function") {
+        force = false;
+        cb = force;
+    }
+    ref = scope.querySelectorAll(attr);
+    for (k = 0, len = ref.length; k < len; k++) {
+        target = ref[k];
+        _nameSpace(target, attr, model, force);
+    }
+    if (scope.querySelectorAll(attr).length) {
+        if (typeof cb === "function") {
+            return cb();
+        }
+    }
+};
+
+junction.addPlugin = function (name, obj, attr, cb) {
+    var k, len, plugin, ref, savePlugin, self;
+    self = this;
+    savePlugin = function (name, obj, attr, cb) {
+        return self['plugins'][name] = {
+            _id: name,
+            model: obj,
+            attr: attr,
+            callback: cb
+        };
+    };
+    if (self.plugins.length) {
+        ref = self.plugins;
+        for (k = 0, len = ref.length; k < len; k++) {
+            plugin = ref[k];
+            if (plugin._id === obj.name) {
+                savePlugin(name, obj, attr, cb);
+            }
+            self.addModel(document, obj, attr, cb);
+            return;
+        }
+    } else {
+        savePlugin(name, obj, attr, cb);
+    }
+    return self.addModel(document, obj, attr, cb);
+};
+
 junction.updateModels = function (scope, force) {
     var k, len, plugin, ref, results1;
+    if (!scope) {
+        scope = document;
+    }
+    if (typeof scope === "boolean") {
+        force = scope;
+        scope = document;
+    }
     ref = this.flattenObject(this['plugins']);
     results1 = [];
     for (k = 0, len = ref.length; k < len; k++) {

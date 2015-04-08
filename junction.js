@@ -12,7 +12,7 @@
   @returns junction
   @this window
  */
-var _$, _junction, junction, bind = function (fn, me) {
+var _$, _junction, _nameSpace, junction, bind = function (fn, me) {
     return function () {
         return fn.apply(me, arguments);
     };
@@ -2294,78 +2294,82 @@ junction.fn.unbind = function (event, callback) {
 
 junction.fn.off = junction.fn.unbind;
 
-(function () {
-    var _addModel, _nameSpace;
-    _nameSpace = function (target, attribute, obj, force) {
-        var originalAttr, params;
-        originalAttr = attribute.replace(/[\[\]']+/g, '');
-        params = target.attributes[originalAttr].value.split(',');
-        params = params.map(function (param) {
-            return param.trim();
-        });
-        attribute = originalAttr.split('-');
-        if (!this[attribute[1]]) {
-            this[attribute[1]] = {};
+_nameSpace = function (target, attribute, obj, force) {
+    var originalAttr, params;
+    originalAttr = attribute.replace(/[\[\]']+/g, '');
+    params = target.attributes[originalAttr].value.split(',');
+    params = params.map(function (param) {
+        return param.trim();
+    });
+    attribute = originalAttr.split('-');
+    if (!this[attribute[1]]) {
+        this[attribute[1]] = {};
+    }
+    if (!this[attribute[1]][params[0]] || force) {
+        this[attribute[1]][params[0]] = null;
+        return this[attribute[1]][params[0]] = new obj(target, originalAttr);
+    }
+};
+
+junction.addModel = function (scope, model, attr, force, cb) {
+    var k, len, ref, target;
+    if (typeof force === "function") {
+        force = false;
+        cb = force;
+    }
+    ref = scope.querySelectorAll(attr);
+    for (k = 0, len = ref.length; k < len; k++) {
+        target = ref[k];
+        _nameSpace(target, attr, model, force);
+    }
+    if (scope.querySelectorAll(attr).length) {
+        if (typeof cb === "function") {
+            return cb();
         }
-        if (!this[attribute[1]][params[0]] || force) {
-            this[attribute[1]][params[0]] = null;
-            return this[attribute[1]][params[0]] = new obj(target, originalAttr);
-        }
+    }
+};
+
+junction.addPlugin = function (name, obj, attr, cb) {
+    var k, len, plugin, ref, savePlugin, self;
+    self = this;
+    savePlugin = function (name, obj, attr, cb) {
+        return self['plugins'][name] = {
+            _id: name,
+            model: obj,
+            attr: attr,
+            callback: cb
+        };
     };
-    _addModel = function (scope, model, attr, force, cb) {
-        var k, len, ref, target;
-        if (typeof force === "function") {
-            force = false;
-            cb = force;
-        }
-        ref = scope.querySelectorAll(attr);
+    if (self.plugins.length) {
+        ref = self.plugins;
         for (k = 0, len = ref.length; k < len; k++) {
-            target = ref[k];
-            _nameSpace(target, attr, model, force);
-        }
-        if (scope.querySelectorAll(attr).length) {
-            if (typeof cb === "function") {
-                return cb();
+            plugin = ref[k];
+            if (plugin._id === obj.name) {
+                savePlugin(name, obj, attr, cb);
             }
+            self.addModel(document, obj, attr, cb);
+            return;
         }
-    };
-    junction._addModel = _addModel;
-    return junction.addPlugin = function (name, obj, attr, cb) {
-        var k, len, plugin, ref, savePlugin;
-        savePlugin = (function (_this) {
-            return function (name, obj, attr, cb) {
-                return _this['plugins'][name] = {
-                    _id: name,
-                    model: obj,
-                    attr: attr,
-                    callback: cb
-                };
-            };
-        })(this);
-        if (this.plugins.length) {
-            ref = this.plugins;
-            for (k = 0, len = ref.length; k < len; k++) {
-                plugin = ref[k];
-                if (plugin._id === obj.name) {
-                    savePlugin(name, obj, attr, cb);
-                }
-                _addModel(document, obj, attr, cb);
-                return;
-            }
-        } else {
-            savePlugin(name, obj, attr, cb);
-        }
-        return _addModel(document, obj, attr, cb);
-    };
-})();
+    } else {
+        savePlugin(name, obj, attr, cb);
+    }
+    return self.addModel(document, obj, attr, cb);
+};
 
 junction.updateModels = function (scope, force) {
     var k, len, plugin, ref, results1;
+    if (!scope) {
+        scope = document;
+    }
+    if (typeof scope === "boolean") {
+        force = scope;
+        scope = document;
+    }
     ref = this.flattenObject(this['plugins']);
     results1 = [];
     for (k = 0, len = ref.length; k < len; k++) {
         plugin = ref[k];
-        results1.push(this._addModel(scope, plugin.model, plugin.attr, false, force));
+        results1.push(this.addModel(scope, plugin.model, plugin.attr, false, force));
     }
     return results1;
 };
