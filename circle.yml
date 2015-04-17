@@ -8,6 +8,8 @@ dependencies:
     - npm i -g normajs
 
 test:
+  pre:
+    - norma build
   override:
     - norma test
 
