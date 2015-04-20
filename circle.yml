@@ -20,5 +20,4 @@ deployment:
   aws:
     branch: master
     commands:
-      # - /bin/bash publish.sh
       - aws s3 cp ./junction.js s3://junction.newspring.cc/
