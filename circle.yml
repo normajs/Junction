@@ -21,4 +21,4 @@ deployment:
     branch: master
     commands:
       # - /bin/bash publish.sh
-      - aws s3 sync ./junction.js s3://junction.newspring.cc/
+      - aws s3 cp ./junction.js s3://junction.newspring.cc/
