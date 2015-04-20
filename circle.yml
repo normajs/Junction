@@ -6,6 +6,8 @@ machine:
 dependencies:
   pre:
     - npm i -g normajs
+  override:
+    - sudo pip install awscli
 
 test:
   pre:
@@ -15,7 +17,7 @@ test:
 
 
 deployment:
-  production:
+  aws:
     branch: master
     commands:
       - /bin/bash publish.sh
