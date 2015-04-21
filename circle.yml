@@ -20,4 +20,4 @@ deployment:
   aws:
     branch: master
     commands:
-      - aws s3 cp ./junction.js s3://junction.newspring.cc/
+      - aws s3 cp ./junction.js s3://cdn.newspring.cc/
