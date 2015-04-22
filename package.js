@@ -8,5 +8,4 @@ Package.describe({
 
 Package.onUse(function (api) {
   api.addFiles("junction.js", "client");
-  api.export("junction", "client");
 });

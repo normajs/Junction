@@ -124,3 +124,5 @@ junction.noConflict = (deep) ->
 #= require_tree ./events
 #= require_tree ./plugins
 #= require_tree ./mutate
+
+@.junction = junction
