@@ -15,8 +15,8 @@ test:
     - norma build
   override:
     - norma test
-    - meteor login
-    - meteor publish --create
+    # - meteor login
+    # - meteor publish --create
 
 
 deployment:
