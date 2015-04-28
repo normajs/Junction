@@ -6,6 +6,7 @@ machine:
 dependencies:
   pre:
     - npm i -g normajs
+    - curl https://install.meteor.com/ | sh
   override:
     - sudo pip install awscli
 
@@ -21,3 +22,7 @@ deployment:
     branch: master
     commands:
       - aws s3 cp ./junction.js s3://cdn.newspring.cc/
+  atmosphere:
+    branch: master
+    commands:
+      - meteor publish --create
