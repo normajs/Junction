@@ -12,7 +12,7 @@
   @returns junction
   @this window
  */
-var EventEmitter, _$, _junction, _nameSpace, junction, bind = function (fn, me) {
+var EventEmitter, _$, _junction, junction, bind = function (fn, me) {
     return function () {
         return fn.apply(me, arguments);
     };
@@ -2366,7 +2366,7 @@ junction.fn.unbind = function (event, callback) {
 
 junction.fn.off = junction.fn.unbind;
 
-_nameSpace = function (target, attribute, obj, force) {
+junction.namespace = function (target, attribute, obj, force) {
     var originalAttr, params;
     originalAttr = attribute.replace(/[\[\]']+/g, '');
     params = target.attributes[originalAttr].value.split(',');
@@ -2392,7 +2392,7 @@ junction.addModel = function (scope, model, attr, force, cb) {
     ref = scope.querySelectorAll(attr);
     for (k = 0, len = ref.length; k < len; k++) {
         target = ref[k];
-        _nameSpace(target, attr, model, force);
+        junction.namespace(target, attr, model, force);
     }
     if (scope.querySelectorAll(attr).length) {
         if (typeof cb === "function") {

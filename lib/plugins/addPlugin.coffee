@@ -1,6 +1,6 @@
 
 
-_nameSpace = (target, attribute, obj, force) ->
+junction.namespace = (target, attribute, obj, force) ->
 
   originalAttr = attribute.replace(/[\[\]']+/g,'')
 
@@ -13,13 +13,14 @@ _nameSpace = (target, attribute, obj, force) ->
   # set attribute name
   attribute = originalAttr.split '-'
 
+
   # add to core object
-  if !@[attribute[1]]
+  if not @[attribute[1]]
     @[attribute[1]] = {}
 
 
   # Create new object and bind it to its nameSpace
-  if !@[attribute[1]][params[0]] or force
+  if not @[attribute[1]][params[0]] or force
     @[attribute[1]][params[0]] = null
     @[attribute[1]][params[0]] = new obj target, originalAttr
 
@@ -33,7 +34,8 @@ junction.addModel = (scope, model, attr, force, cb) ->
     cb = force
 
   for target in scope.querySelectorAll(attr)
-    _nameSpace target, attr, model, force
+
+    junction.namespace target, attr, model, force
 
   if scope.querySelectorAll(attr).length
     if typeof cb is "function"
