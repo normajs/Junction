@@ -12,11 +12,12 @@
   @returns junction
   @this window
  */
-var _$, _junction, _nameSpace, junction, bind = function (fn, me) {
+var EventEmitter, _$, _junction, _nameSpace, junction, bind = function (fn, me) {
     return function () {
         return fn.apply(me, arguments);
     };
-};
+},
+    slice = [].slice;
 
 junction = function (selector, context) {
     var domFragment, element, elements, m, match, returnElements, rquickExpr, selectorType;
@@ -267,6 +268,77 @@ junction._debounce = (function () {
 junction.debounce = function (callback) {
     return new this._.debounce(callback);
 };
+
+EventEmitter = (function () {
+    function EventEmitter() {
+        this.events = {};
+    }
+
+    EventEmitter.prototype.emit = function () {
+        var args, event, k, len, listener, ref;
+        event = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+        if (!this.events[event]) {
+            return false;
+        }
+        ref = this.events[event];
+        for (k = 0, len = ref.length; k < len; k++) {
+            listener = ref[k];
+            listener.apply(null, args);
+        }
+        return true;
+    };
+
+    EventEmitter.prototype.addListener = function (event, listener) {
+        var base;
+        this.emit('newListener', event, listener);
+        ((base = this.events)[event] != null ? base[event] : base[event] = []).push(listener);
+        return this;
+    };
+
+    EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+    EventEmitter.prototype.once = function (event, listener) {
+        var fn;
+        fn = (function (_this) {
+            return function () {
+                _this.removeListener(event, fn);
+                return listener.apply(null, arguments);
+            };
+        })(this);
+        this.on(event, fn);
+        return this;
+    };
+
+    EventEmitter.prototype.removeListener = function (event, listener) {
+        var l;
+        if (!this.events[event]) {
+            return this;
+        }
+        this.events[event] = (function () {
+            var k, len, ref, results1;
+            ref = this.events[event];
+            results1 = [];
+            for (k = 0, len = ref.length; k < len; k++) {
+                l = ref[k];
+                if (l !== listener) {
+                    results1.push(l);
+                }
+            }
+            return results1;
+        }).call(this);
+        return this;
+    };
+
+    EventEmitter.prototype.removeAllListeners = function (event) {
+        delete this.events[event];
+        return this;
+    };
+
+    return EventEmitter;
+
+})();
+
+junction.EventEmitter = EventEmitter;
 
 
 /*
@@ -952,18 +1024,18 @@ junction.cssExceptions = {
     vendorPrefixes = ["", "-webkit-", "-ms-", "-moz-", "-o-", "-khtml-"];
 
 /*
-
+  
     Private function for getting the computed
     style of an element.
-
+  
     NOTE** Please use the [css](../css.js.html) method instead.
-
+  
     @method _getStyle
     @param {HTMLElement} element The element we want the style property for.
     @param {string} property The css property we want the style for.
    */
     return junction._getStyle = function (element, property) {
-        var convert, exception, k, l, len, len1, prefix, ref, value;
+        var convert, exception, k, len, len1, n, prefix, ref, value;
         if (cssExceptions[property]) {
             ref = cssExceptions[property];
             for (k = 0, len = ref.length; k < len; k++) {
@@ -974,8 +1046,8 @@ junction.cssExceptions = {
                 }
             }
         }
-        for (l = 0, len1 = vendorPrefixes.length; l < len1; l++) {
-            prefix = vendorPrefixes[l];
+        for (n = 0, len1 = vendorPrefixes.length; n < len1; n++) {
+            prefix = vendorPrefixes[n];
             convert = convertPropertyName(prefix + property);
             value = _getStyle(element, convert);
             if (convert !== property) {
@@ -1002,11 +1074,11 @@ junction.cssExceptions = {
     cssExceptions = junction.cssExceptions;
 
 /*
-
+  
     Private function for setting the style of an element.
-
+  
     NOTE** Please use the [css](../css.js.html) method instead.
-
+  
     @method _setStyle
     @param {HTMLElement} element The element we want to style.
     @param {string} property The property being used to style the element.
@@ -1283,11 +1355,11 @@ junction.fn.html = function (html) {
     };
 
 /*
-
+  
     Find the index in the current set for the passed
     selector. Without a selector it returns the
     index of the first node within the array of its siblings.
-
+  
     @param {string|undefined} selector The selector used to search for the index.
     @return {integer}
     @this {junction}
@@ -2230,7 +2302,7 @@ junction.fn.trigger = function (event, args) {
 junction.fn.unbind = function (event, callback) {
     var evts, unbind, unbindAll;
     unbind = function (e, namespace, cb) {
-        var bnd, bound, k, l, len, len1, match, matched, results1;
+        var bnd, bound, k, len, len1, match, matched, n, results1;
         matched = [];
         bound = this.junctionData.events[e];
         if (!bound.length) {
@@ -2254,8 +2326,8 @@ junction.fn.unbind = function (event, callback) {
             return;
         }
         results1 = [];
-        for (l = 0, len1 = matched.length; l < len1; l++) {
-            match = matched[l];
+        for (n = 0, len1 = matched.length; n < len1; n++) {
+            match = matched[n];
             results1.push(this.junctionData.events[e].splice(matched.indexOf(match), 1));
         }
         return results1;
@@ -2448,7 +2520,7 @@ junction.updateModels = function (scope, force) {
      of registered observers, run these substeps:" part of the algorithms. The
      |options.subtree| is checked to ensure that the callback is called
      correctly.
-
+     
      @param {Node} target
      @param {function(MutationObserverInit):MutationRecord} callback
      */
@@ -2560,7 +2632,7 @@ junction.updateModels = function (scope, force) {
     /**
      Selects which record, if any, to replace the last record in the queue.
      This returns |null| if no record should be replaced.
-
+     
      @param {MutationRecord} lastRecord
      @param {MutationRecord} newRecord
      @param {MutationRecord}

@@ -86,19 +86,19 @@ describe 'Utilities tests', ->
   # The GETQUERYVARIABLE function returns an array of query variables in the
   # URL string matching the value.
 
-  it 'GETQUERYVARIABLE method should work', ->
-
-    casper.thenOpen 'https://newspring.cc/?testing=all&thething=all&theotherthing=three', () ->
-      @.page.injectJs("./out/junction.js")
-      testThing = @.evaluate ->
-        return junction.getQueryVariable "testing"
-
-
-      testThing[0].should.equal("testing=all")
-
-    casper.back()
-
-    return
+  # it 'GETQUERYVARIABLE method should work', ->
+  #
+  #   casper.thenOpen 'https://newspring.cc/?testing=all&thething=all&theotherthing=three', () ->
+  #     @.page.injectJs("./out/junction.js")
+  #     testThing = @.evaluate ->
+  #       return junction.getQueryVariable "testing"
+  #
+  #
+  #     testThing[0].should.equal("testing=all")
+  #
+  #   casper.back()
+  #
+  #   return
 
 
   # ISMOBILE ------------------------------------------------------------------

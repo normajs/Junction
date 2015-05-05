@@ -5,17 +5,6 @@
       "src": "lib/**/*",
       "dest": "out"
     },
-    "mocha-casperjs": {
-      "src": "tests/**/*"
-    },
-    "browser-sync": {
-      "server": {
-        "baseDir": "./workbench"
-      },
-      "tunnel": false,
-      "files": ["./workbench/**/*"],
-      "watch": "tests/**"
-    },
     "copy": {
       "src": "out/junction",
       "dest": "./",
@@ -26,6 +15,18 @@
     "browser-sync copy": {
       "@extend": "copy",
       "dest": "workbench"
+    },
+    "mocha-casperjs": {
+      "src": "tests/**/*"
+    },
+    "browser-sync": {
+      "dev": true,
+      "server": {
+        "baseDir": "./workbench"
+      },
+      "tunnel": false,
+      "files": ["./workbench/**/*"],
+      "watch": "tests/**"
     }
   },
   "test": "mocha-casperjs"

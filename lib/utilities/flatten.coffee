@@ -10,7 +10,7 @@
   @note
     Handy for getting a list of children from the nodes.
 
-  ###
+###
 junction.flatten = (array) ->
 
   flattened = []
