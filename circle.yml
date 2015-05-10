@@ -1,12 +1,21 @@
-
 machine:
+  pre:
+    - curl https://api.spark.io/v1/devices/$STATUS_LIGHT/setStatus -d access_token=$SPARK_API_TOKEN -d "args=building"
   node:
     version: 0.10.33
 
+notify:
+  webhooks:
+    - url: http://apollos.newspring.io/hubot/status/set
+
 dependencies:
+  cache_directories:
+    - "node_modules/"
+    - "~/.meteor"
   pre:
     - npm i -g normajs
     - curl https://install.meteor.com/ | sh
+    - echo "$METEOR_USER\r$METEOR_PASS" | meteor login
   override:
     - sudo pip install awscli
 
@@ -15,12 +24,13 @@ test:
     - norma build
   override:
     - norma test
-    # - meteor login
-    # - meteor publish --create
-
 
 deployment:
   aws:
     branch: master
     commands:
       - aws s3 cp ./junction.js s3://cdn.newspring.cc/
+  meteor:
+    branch: master
+    commands:
+      - meteor publish
