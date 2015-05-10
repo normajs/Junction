@@ -1,6 +1,4 @@
 machine:
-  pre:
-    - curl https://api.spark.io/v1/devices/$STATUS_LIGHT/setStatus -d access_token=$SPARK_API_TOKEN -d "args=building"
   node:
     version: 0.10.33
 
@@ -13,6 +11,7 @@ dependencies:
     - "node_modules/"
     - "~/.meteor"
   pre:
+    - curl https://api.spark.io/v1/devices/$STATUS_LIGHT/setStatus -d access_token=$SPARK_API_TOKEN -d "args=building"
     - npm i -g normajs
     - curl https://install.meteor.com/ | sh
     - echo -e "$METEOR_USER\r$METEOR_PASS" | meteor login
