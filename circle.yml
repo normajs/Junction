@@ -25,11 +25,8 @@ test:
     - norma test
 
 deployment:
-  aws:
-    branch: master
-    commands:
-      - aws s3 cp ./junction.js s3://cdn.newspring.cc/
   meteor:
     branch: master
     commands:
+      - aws s3 cp ./junction.js s3://cdn.newspring.cc/
       - meteor publish
