@@ -15,7 +15,7 @@ dependencies:
   pre:
     - npm i -g normajs
     - curl https://install.meteor.com/ | sh
-    - echo "${METEOR_USER}\r${METEOR_PASS}" | meteor login
+    - echo -e "$METEOR_USER\r$METEOR_PASS" | meteor login
   override:
     - sudo pip install awscli
 
